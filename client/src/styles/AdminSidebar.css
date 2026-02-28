@@ -1,0 +1,303 @@
+/* AdminSidebar.css */
+.admin-sidebar {
+  width: 280px;
+  height: 100vh;
+  background-color: #3b1b17;
+  /* Slightly darker and richer for a premium feel */
+  background-image: linear-gradient(180deg, #46211d 0%, #2f1411 100%);
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 1.5rem;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  /* Softer, wider shadow */
+  overflow-y: auto;
+  z-index: 1000;
+  color: #f9f9f9;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.admin-sidebar.collapsed {
+  width: 80px;
+  padding: 2.5rem 0.5rem;
+  overflow-x: hidden;
+  /* Prevent text spilling before display: none hits */
+}
+
+/* Logo Section */
+.sidebar-logo {
+  margin-bottom: 3.5rem;
+  display: flex;
+  justify-content: flex-start;
+  /* Align logo with text for a cleaner look */
+  padding: 0 0.5rem;
+  transition: justify-content 0.3s ease;
+}
+
+.admin-sidebar.collapsed .sidebar-logo {
+  justify-content: center;
+}
+
+.sidebar-logo img {
+  max-width: 100%;
+  height: auto;
+  max-height: 55px;
+  object-fit: contain;
+  transition: transform 0.3s ease, max-height 0.3s ease;
+}
+
+.admin-sidebar.collapsed .sidebar-logo img {
+  max-height: 40px;
+}
+
+.sidebar-logo img:hover {
+  transform: scale(1.02);
+}
+
+/* Navigation Section */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.9rem 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  /* Muted default text for elegant contrast */
+  text-decoration: none;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smoother interaction */
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.admin-sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.8rem;
+  gap: 0;
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background-color: rgba(222, 139, 71, 0.08);
+  /* Sophisticated faint glow */
+  transform: translateX(4px);
+  /* Subtle nudge */
+}
+
+.admin-sidebar.collapsed .nav-item:hover {
+  transform: none;
+  /* Disable shift when collapsed */
+}
+
+.nav-item.active {
+  color: #DE8B47;
+  background-color: rgba(222, 139, 71, 0.12);
+  font-weight: 600;
+}
+
+/* Elegant left-bar indicator for active item */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 4px;
+  height: 65%;
+  background-color: #DE8B47;
+  border-radius: 0 4px 4px 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.admin-sidebar.collapsed .nav-item::before {
+  display: none;
+  /* Hide left bar when collapsed for balanced look */
+}
+
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: inherit;
+  transition: color 0.3s ease, transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+  flex-shrink: 0;
+}
+
+.admin-sidebar.collapsed .nav-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.05);
+}
+
+.nav-text {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  /* Slightly more breathable text */
+  transition: opacity 0.2s ease;
+}
+
+/* Profile Section */
+.sidebar-profile {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.profile-card {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Glassmorphism touch */
+  border-radius: 16px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.profile-card:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(222, 139, 71, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profile-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DE8B47, #c47333);
+  /* Richer gradient avatar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(222, 139, 71, 0.4);
+  flex-shrink: 0;
+}
+
+.profile-avatar svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.profile-role {
+  color: #DE8B47;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Scrollbar Styling */
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(222, 139, 71, 0.3);
+  border-radius: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(222, 139, 71, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 80px;
+    padding: 2.5rem 0.5rem;
+  }
+
+  .nav-text {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 0.8rem;
+    gap: 0;
+  }
+
+  .nav-item:hover {
+    transform: none;
+  }
+
+  .nav-item::before {
+    display: none;
+  }
+
+  .nav-item.active {
+    background-color: rgba(222, 139, 71, 0.15);
+  }
+
+  .nav-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.8rem 0.5rem;
+    gap: 0;
+    border-radius: 12px;
+  }
+
+  .profile-info {
+    display: none;
+  }
+
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sidebar-logo {
+    justify-content: center;
+  }
+
+  .sidebar-logo img {
+    max-height: 40px;
+  }
+}

@@ -1,35 +1,97 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import CustomerHeader from './components/CustomerHeader';
+import CustomerFooter from './components/CustomerFooter';
+import AdminLayout from './components/AdminLayout';
+import './App.css';
+
+// Customer Pages
+import Home from './pages/Home';
+import Furniture from './pages/FurnitureCatalog';
+import Design from './pages/DesignCatalog';
+import Room from './pages/Room';
+import About from './pages/About';
+
+// Admin Pages
+import Dashboard from './pages/admin/Dashboard';
+//import RoomManagement from './pages/admin/RoomManagement';
+//import FurnitureManagement from './pages/admin/FurnitureManagement';
+//import DesignWorkspace from './pages/admin/DesignWorkspace';
+//import DesignLibrary from './pages/admin/DesignLibrary';
+//import CustomerOrders from './pages/admin/CustomerOrders';
+//import Analysis from './pages/admin/Analysis';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="app">
+        <Routes>
+          {/* Customer Routes with Header & Footer */}
+          <Route path="/" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <Home />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+          
+          <Route path="/furniture" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <Furniture />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+          
+          <Route path="/design" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <Design />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+          
+          <Route path="/room" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <Room />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+          
+          <Route path="/about" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <About />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+
+          {/* Admin Routes with Sidebar */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+           {/* <Route path="room-management" element={<RoomManagement />} />
+            <Route path="furniture-management" element={<FurnitureManagement />} />
+            <Route path="design-workspace" element={<DesignWorkspace />} />
+            <Route path="design-library" element={<DesignLibrary />} />
+            <Route path="customer-orders" element={<CustomerOrders />} />
+            <Route path="analysis" element={<Analysis />} /> */}
+          </Route>
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
