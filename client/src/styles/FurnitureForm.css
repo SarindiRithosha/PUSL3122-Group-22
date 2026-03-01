@@ -1,0 +1,533 @@
+/* FurnitureForm.css */
+.ff-container {
+    padding: 1rem 0;
+    background-color: transparent;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.ff-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+}
+
+.ff-back-btn:hover {
+    color: #DE8B47;
+}
+
+/* Split Layout */
+.ff-split-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: stretch;
+}
+
+/* Form Card (Left) */
+.ff-form-card {
+    flex: 1.8;
+    background-color: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+}
+
+.ff-title {
+    margin: 0 0 2rem 0;
+    color: #2c2c2c;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Form Elements */
+.ff-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.ff-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.ff-form-group.margin-0 {
+    margin-bottom: 0;
+}
+
+.ff-form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ff-form-group label span {
+    color: inherit;
+}
+
+.ff-subtext {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0 0 0.8rem 0;
+}
+
+.ff-form-group input,
+.ff-form-group select,
+.ff-form-group textarea {
+    padding: 0.8rem 1rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.ff-form-group input:focus,
+.ff-form-group select:focus,
+.ff-form-group textarea:focus {
+    border-color: #DE8B47;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(222, 139, 71, 0.1);
+}
+
+.ff-form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+}
+
+.ff-price-input {
+    max-width: 250px;
+}
+
+/* Colors Section */
+.ff-color-row.container-box {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    background-color: #F8F9FB;
+    /* Very light gray */
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+}
+
+.ff-color-swatch-large {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.ff-color-swatch-large:hover {
+    transform: scale(1.1);
+}
+
+.ff-add-hex-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #DE8B47;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.ff-plus-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #DE8B47;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* Edit Mode Dimensions & Files */
+.ff-dim-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+.ff-file-replace-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background-color: #F8F9FB;
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ff-file-replace-card:hover {
+    border-color: #d18a4a;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.ff-file-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ff-file-icon-box.green {
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.ff-file-icon-box.orange {
+    background-color: rgba(222, 139, 71, 0.1);
+}
+
+.ff-file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.ff-file-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.ff-file-action {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.ff-file-action.green {
+    color: #4CAF50;
+}
+
+.ff-file-action.orange {
+    color: #DE8B47;
+}
+
+
+/* Add Mode Drag & Drop */
+.ff-drag-drop-area {
+    border: 2px dashed #DE8B47;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background-color: rgba(222, 139, 71, 0.03);
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ff-drag-drop-area:hover {
+    background-color: rgba(222, 139, 71, 0.08);
+    /* Slightly darker on hover */
+}
+
+.ff-drag-drop-area svg {
+    margin-bottom: 0.5rem;
+}
+
+.ff-drag-drop-area p strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+
+/* Toggle Switch */
+.ff-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 0.5rem;
+}
+
+.ff-toggle-text label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.ff-toggle-text .ff-subtext {
+    margin: 0;
+}
+
+/* The switch - the box around the slider */
+.ff-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+/* Hide default HTML checkbox */
+.ff-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.ff-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.ff-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked+.ff-slider {
+    background-color: #4CAF50;
+}
+
+input:checked+.ff-slider:before {
+    transform: translateX(22px);
+}
+
+/* Rounded sliders */
+.ff-slider.round {
+    border-radius: 24px;
+}
+
+.ff-slider.round:before {
+    border-radius: 50%;
+}
+
+/* Form Footer Buttons */
+.ff-form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.ff-required-note {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.ff-footer-actions {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.ff-btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ff-btn.text {
+    background: none;
+    border: none;
+    color: #666;
+}
+
+.ff-btn.text:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.ff-btn.primary {
+    background-color: #DE8B47;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(222, 139, 71, 0.3);
+}
+
+.ff-btn.primary:hover {
+    background-color: #c77b3b;
+    transform: translateY(-1px);
+}
+
+.ff-btn.outline-danger {
+    background-color: white;
+    color: #f44336;
+    border: 1px solid #ffcdd2;
+}
+
+.ff-btn.outline-danger:hover {
+    background-color: #ffebee;
+}
+
+/* Preview Card (Right) */
+.ff-preview-card {
+    flex: 1;
+    /* Takes remaining space */
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    min-width: 350px;
+}
+
+.ff-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    z-index: 10;
+}
+
+.ff-preview-title {
+    font-weight: 700;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.ff-preview-toggle {
+    display: flex;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    padding: 2px;
+}
+
+.ff-preview-toggle button {
+    background: none;
+    border: none;
+    padding: 0.3rem 1rem;
+    border-radius: 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ff-preview-toggle button.active {
+    background-color: white;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.ff-preview-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FDFDFD;
+    position: relative;
+    min-height: 400px;
+}
+
+.ff-preview-content svg {
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+    transition: transform 0.3s ease;
+}
+
+.ff-preview-content svg:hover {
+    transform: scale(1.05);
+}
+
+.ff-preview-footer {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+.ff-dimensions-chip {
+    background-color: white;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.ff-dim-title {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+
+.ff-dim-value {
+    font-size: 0.85rem;
+    color: #333;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .ff-split-layout {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .ff-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .ff-file-replace-card {
+        margin-bottom: 1rem;
+    }
+}

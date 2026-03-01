@@ -8,16 +8,19 @@ import './App.css';
 // Customer Pages
 import Home from './pages/Home';
 import Furniture from './pages/FurnitureCatalog';
+import FurnitureDetail from './pages/FurnitureDetail';
 import Design from './pages/DesignCatalog';
 import Room from './pages/Room';
 import About from './pages/About';
 
 // Admin Pages
 import Dashboard from './pages/admin/Dashboard';
-//import RoomManagement from './pages/admin/RoomManagement';
-//import FurnitureManagement from './pages/admin/FurnitureManagement';
+import RoomManagement from './pages/admin/RoomManagement';
+import RoomForm from './pages/admin/RoomForm';
+import FurnitureManagement from './pages/admin/FurnitureManagement';
+import FurnitureForm from './pages/admin/FurnitureForm';
+import DesignLibrary from './pages/admin/DesignLibrary';
 //import DesignWorkspace from './pages/admin/DesignWorkspace';
-//import DesignLibrary from './pages/admin/DesignLibrary';
 //import CustomerOrders from './pages/admin/CustomerOrders';
 //import Analysis from './pages/admin/Analysis';
 
@@ -42,6 +45,16 @@ function App() {
               <CustomerHeader />
               <main className="main-content">
                 <Furniture />
+              </main>
+              <CustomerFooter />
+            </>
+          } />
+
+           <Route path="/furniture/:id" element={
+            <>
+              <CustomerHeader />
+              <main className="main-content">
+                <FurnitureDetail />
               </main>
               <CustomerFooter />
             </>
@@ -77,16 +90,17 @@ function App() {
             </>
           } />
 
-          {/* Admin Routes with Sidebar */}
+           {/* Admin Routes with Sidebar Layout */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
-           {/* <Route path="room-management" element={<RoomManagement />} />
+            <Route path="room-management" element={<RoomManagement />} />
+            <Route path="room-management/add" element={<RoomForm />} />
+            <Route path="room-management/edit/:id" element={<RoomForm />} />
             <Route path="furniture-management" element={<FurnitureManagement />} />
-            <Route path="design-workspace" element={<DesignWorkspace />} />
+            <Route path="furniture-management/add" element={<FurnitureForm />} />
+            <Route path="furniture-management/edit/:id" element={<FurnitureForm />} />
             <Route path="design-library" element={<DesignLibrary />} />
-            <Route path="customer-orders" element={<CustomerOrders />} />
-            <Route path="analysis" element={<Analysis />} /> */}
           </Route>
         </Routes>
       </div>

@@ -1,0 +1,319 @@
+/* FurnitureDetail.css */
+
+.cd-page-container {
+    background-color: #FDF9F6;
+    /* Matches the warm off-white background of the mockup */
+    min-height: 100vh;
+    padding: 3rem 0;
+    display: flex;
+    justify-content: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.cd-inner-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 2rem;
+}
+
+/* Back Button */
+.cd-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cd-back-btn:hover {
+    opacity: 0.8;
+}
+
+.cd-back-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #4A3A31;
+    /* Dark brown from the arrow */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cd-back-btn span {
+    color: #7A6960;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+
+/* Layout */
+.cd-split-layout {
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+}
+
+/* Gallery Section (Left) */
+.cd-gallery-section {
+    flex: 1.2;
+}
+
+.cd-main-image-box {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    min-height: 400px;
+}
+
+.cd-thumbnail-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.cd-thumbnail {
+    background-color: white;
+    border-radius: 8px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    opacity: 0.7;
+}
+
+.cd-thumbnail:hover {
+    opacity: 1;
+}
+
+.cd-thumbnail.active {
+    border-color: #D4A373;
+    /* Warm tan/orange */
+    opacity: 1;
+}
+
+
+/* Details Section (Right) */
+.cd-details-section {
+    flex: 1;
+    padding-top: 1rem;
+}
+
+.cd-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #382A22;
+    /* Very dark brown/black */
+    margin: 0 0 1rem 0;
+    font-family: serif;
+    /* The title in the mockup has a serif-like elegant feel, or a very clean sans. Based on images, a strong sans is good but lets use what fits */
+}
+
+.cd-description {
+    color: #6B5B51;
+    /* Muted brown */
+    line-height: 1.6;
+    font-size: 1rem;
+    margin: 0 0 2rem 0;
+}
+
+/* Specs Boxes */
+.cd-specs-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.cd-spec-box {
+    flex: 1;
+    border: 1px solid #E6DCD3;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+}
+
+.cd-spec-label {
+    font-size: 0.8rem;
+    color: #A38C7A;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cd-spec-value {
+    font-size: 0.95rem;
+    color: #4A3A31;
+    font-weight: 700;
+}
+
+/* Colors Section */
+.cd-color-section {
+    margin-bottom: 2rem;
+}
+
+.cd-section-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #7A6960;
+    margin-bottom: 1rem;
+}
+
+.cd-color-options {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.cd-color-swatch {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #E6DCD3;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    padding: 0;
+}
+
+.cd-color-swatch.active {
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #4A3A31;
+    transform: scale(1.1);
+}
+
+/* Actions Row (Qty + Buttons) */
+.cd-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cd-quantity-picker {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #E6DCD3;
+    border-radius: 8px;
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.cd-qty-btn {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 48px;
+    font-size: 1.2rem;
+    color: #4A3A31;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.cd-qty-btn:hover {
+    background-color: #FDF9F6;
+}
+
+.cd-qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4A3A31;
+    padding: 0;
+    pointer-events: none;
+}
+
+/* Buttons */
+.cd-btn-primary,
+.cd-btn-secondary {
+    height: 48px;
+    padding: 0 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+}
+
+.cd-btn-primary {
+    background-color: #4A3A31;
+    /* Very dark brown */
+    color: white;
+    border: none;
+    flex: 1.2;
+}
+
+.cd-btn-primary:hover {
+    background-color: #362A24;
+    transform: translateY(-1px);
+}
+
+.cd-btn-secondary {
+    background-color: transparent;
+    border: 1px solid #D4C4B7;
+    color: #4A3A31;
+    flex: 1;
+}
+
+.cd-btn-secondary:hover {
+    background-color: rgba(212, 196, 183, 0.1);
+    border-color: #4A3A31;
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+    .cd-split-layout {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .cd-gallery-section,
+    .cd-details-section {
+        width: 100%;
+        flex: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .cd-specs-row {
+        flex-direction: column;
+    }
+
+    .cd-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cd-quantity-picker {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        justify-content: center;
+    }
+}
