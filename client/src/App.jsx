@@ -22,7 +22,7 @@ import FurnitureForm from './pages/admin/FurnitureForm';
 import DesignLibrary from './pages/admin/DesignLibrary';
 //import DesignWorkspace from './pages/admin/DesignWorkspace';
 //import CustomerOrders from './pages/admin/CustomerOrders';
-//import Analysis from './pages/admin/Analysis';
+import Analysis from './pages/admin/Analytics';
 
 function App() {
   return (
@@ -101,6 +101,7 @@ function App() {
             <Route path="furniture-management/add" element={<FurnitureForm />} />
             <Route path="furniture-management/edit/:id" element={<FurnitureForm />} />
             <Route path="design-library" element={<DesignLibrary />} />
+            <Route path="analysis" element={<Analysis />} />
           </Route>
         </Routes>
       </div>
