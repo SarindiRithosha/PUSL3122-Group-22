@@ -1,0 +1,120 @@
+/* Basic reset and typography may be handled globally; add page-specific rules here */
+
+.contact-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.contact-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.contact-page .intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.contact-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.contact-info {
+  background: #f8f8f8;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.contact-info h2 {
+  margin-top: 0;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.contact-info li {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.contact-info .icon {
+  margin-right: 0.75rem;
+  color: #d48a3c;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.contact-form {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.contact-form .row {
+  display: flex;
+  gap: 1rem;
+}
+
+.contact-form .field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.contact-form label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-button {
+  background: #d48a3c;
+  color: #fff;
+  border: none;
+  width: 500px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.submit-button:hover {
+  background: #c87a2e;
+}
+
+
+@media (max-width: 768px) {
+  .contact-container {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form .row {
+    flex-direction: column;
+  }
+}

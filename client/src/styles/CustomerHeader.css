@@ -63,7 +63,8 @@
   align-items: center;
 }
 
-.cart-icon {
+.cart-icon,
+.account-icon {
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -181,4 +182,28 @@
   .nav-links a {
     font-size: 0.9rem;
   }
+}
+
+.cart-icon {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #8b4c3a;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

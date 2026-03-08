@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* App.css */
 * {
   margin: 0;
@@ -22,9 +24,6 @@ body {
   flex: 1;
   width: 100%;
 }
-
-/* Import Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Responsive padding */
 @media (max-width: 768px) {
