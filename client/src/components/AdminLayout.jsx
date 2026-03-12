@@ -6,8 +6,10 @@ import '../styles/AdminLayout.css';
 const AdminLayout = () => {
   const location = useLocation();
 
-  // Collapse sidebar on add/edit pages
-  const isCollapsed = location.pathname.includes('/add') || location.pathname.includes('/edit');
+  const isCollapsed =
+    location.pathname.includes('/add') ||
+    location.pathname.includes('/edit') ||
+    location.pathname.includes('/design-workspace');
 
   return (
     <div className="admin-layout">

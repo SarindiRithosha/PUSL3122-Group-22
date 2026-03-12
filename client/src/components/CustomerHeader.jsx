@@ -1,95 +1,72 @@
-import React, { useState } from 'react';
+// client/src/components/CustomerHeader.jsx
+import React, { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { FiUser, FiShoppingCart, FiLogOut, FiSettings } from 'react-icons/fi';
+import { useCustomerAuth } from '../contexts/CustomerAuthContext';
 import Cart from '../pages/Cart';
 import '../styles/CustomerHeader.css';
 
 const CustomerHeader = () => {
-  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Nordic Oak Chair",
-      price: 32000,
-      quantity: 2,
-      image: "",
-      category: "Chair"
-    },
-    {
-      id: 2,
-      name: "Minimalist Wooden Table",
-      price: 45000,
-      quantity: 1,
-      image: "",
-      category: "Table"
-    },
-    {
-      id: 3,
-      name: "Scandinavian Sofa",
-      price: 85000,
-      quantity: 1,
-      image: "",
-      category: "Sofa"
-    },
-    {
-      id: 4,
-      name: "Industrial Bookshelf",
-      price: 28000,
-      quantity: 3,
-      image: "",
-      category: "Storage"
-    }
+  const [isDropdownOpen,  setIsDropdownOpen]  = useState(false);
+  const [isGuestPopupOpen,setIsGuestPopupOpen]= useState(false);
+  const [isCartOpen,      setIsCartOpen]      = useState(false);
+  const [cartItems,       setCartItems]       = useState([
+    { id:1, name:"Nordic Oak Chair",        price:32000, quantity:2, image:"", category:"Chair"   },
+    { id:2, name:"Minimalist Wooden Table", price:45000, quantity:1, image:"", category:"Table"   },
+    { id:3, name:"Scandinavian Sofa",       price:85000, quantity:1, image:"", category:"Sofa"    },
+    { id:4, name:"Industrial Bookshelf",    price:28000, quantity:3, image:"", category:"Storage" },
   ]);
 
-  const { isLoggedIn, login, logout } = useAuth();
-  const navigate = useNavigate();
+  const { customer, isCustomerLoggedIn, logoutCustomer } = useCustomerAuth();
+  const navigate  = useNavigate();
+  const dropdownRef = useRef(null);
 
-  const toggleLoginPopup = () => {
-    setIsLoginPopupOpen(!isLoginPopupOpen);
-  };
-
-  const incrementItem = (id) => {
-    setCartItems(items =>
-      items.map(i => i.id === id ? { ...i, quantity: i.quantity + 1 } : i)
-    );
-  };
-
-  const decrementItem = (id) => {
-    setCartItems(items =>
-      items
-        .map(i => i.id === id ? { ...i, quantity: Math.max(1, i.quantity - 1) } : i)
-    );
-  };
-
-  const removeItem = (id) => {
-    setCartItems(items => items.filter(i => i.id !== id));
-  };
-
-  // Optional: Function to clear cart or add more sample items
-  const addSampleItem = () => {
-    const newItem = {
-      id: Date.now(),
-      name: "Vintage Desk Lamp",
-      price: 8500,
-      quantity: 1,
-      image: "",
-      category: "Lighting"
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
     };
-    setCartItems([...cartItems, newItem]);
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const incrementItem = (id) =>
+    setCartItems(items => items.map(i => i.id===id ? {...i, quantity:i.quantity+1} : i));
+  const decrementItem = (id) =>
+    setCartItems(items => items.map(i => i.id===id ? {...i, quantity:Math.max(1,i.quantity-1)} : i));
+  const removeItem = (id) =>
+    setCartItems(items => items.filter(i => i.id!==id));
+
+  const handleLogout = () => {
+    setIsDropdownOpen(false);
+    logoutCustomer();
+    navigate('/');
   };
+
+  const handleMyAccount = () => {
+    setIsDropdownOpen(false);
+    navigate('/myaccount');
+  };
+
+  // Get initials for avatar when logged in
+  const initials = customer?.name
+    ? customer.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase()
+    : '';
 
   return (
     <header className="customer-header">
       <div className="header-container">
-        {/* Logo Section */}
+
+        {/* Logo */}
         <div className="logo-section">
           <Link to="/">
-            <img src="/images/logo.png" alt="FurniPlan Logo" className="logo" />
+            <img src="/images/logo.png" alt="FurniPlan Logo" className="logo"/>
           </Link>
         </div>
 
-        {/* Navigation Section */}
+        {/* Navigation */}
         <nav className="nav-section">
           <ul className="nav-links">
             <li><Link to="/furniture">Furniture</Link></li>
@@ -99,111 +76,85 @@ const CustomerHeader = () => {
           </ul>
         </nav>
 
-        {/* Icons Section */}
+        {/* Icons */}
         <div className="icons-section">
-          <button 
-            className="cart-icon" 
-            onClick={() => setIsCartOpen(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative' }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 22C8.55228 22 9 21.5523 9 21C9 20.4477 8.55228 20 8 20C7.44772 20 7 20.4477 7 21C7 21.5523 7.44772 22 8 22Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M19 22C19.5523 22 20 21.5523 20 21C20 20.4477 19.5523 20 19 20C18.4477 20 18 20.4477 18 21C18 21.5523 18.4477 22 19 22Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 2H6L8 16H20" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+
+          {/* Cart */}
+          <button className="cart-icon" onClick={() => setIsCartOpen(true)}>
+            <FiShoppingCart size={22} strokeWidth={1.8}/>
             {cartItems.length > 0 && (
               <span className="cart-count">{cartItems.length}</span>
             )}
           </button>
-          
-          {isLoggedIn && (
-            <Link to="/myaccount" className="account-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-          )}
-          
-          <button className="user-icon" onClick={toggleLoginPopup}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
 
-        {/* Optional: Add a small button to test adding items (you can remove this) 
-        <button 
-          onClick={addSampleItem}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            padding: '10px',
-            background: '#8b4c3a',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            zIndex: 999
-          }}
-        >
-          Add Test Item
-        </button> */}
+          {/* Single profile area — dropdown if logged in, popup if guest */}
+          <div className="profile-area" ref={dropdownRef}>
+            {isCustomerLoggedIn ? (
+              <>
+                <button
+                  className="profile-btn logged-in"
+                  onClick={() => setIsDropdownOpen(o => !o)}
+                  aria-label="Account menu"
+                  aria-expanded={isDropdownOpen}>
+                  {initials
+                    ? <span className="profile-avatar">{initials}</span>
+                    : <FiUser size={22} strokeWidth={1.8}/>
+                  }
+                </button>
 
-        {/* Login Popup */}
-        {isLoginPopupOpen && (
-          <div className="login-popup">
-            <div className="popup-content">
-              <button className="close-popup" onClick={toggleLoginPopup}>×</button>
-              {isLoggedIn ? (
-                <>
-                  <h3>Welcome back</h3>
-                  <button
-                    className="login-option"
-                    onClick={() => {
-                      logout();
-                      toggleLoginPopup();
-                      navigate('/');
-                    }}
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h3>Login</h3>
-                  <div className="login-options">
+                {isDropdownOpen && (
+                  <div className="profile-dropdown">
+                    <div className="profile-dropdown-header">
+                      <span className="profile-dropdown-name">{customer?.name || 'Customer'}</span>
+                      <span className="profile-dropdown-email">{customer?.email || ''}</span>
+                    </div>
+                    <div className="profile-dropdown-divider"/>
+                    <button className="profile-dropdown-item" onClick={handleMyAccount}>
+                      <FiSettings size={15} strokeWidth={1.8}/>
+                      My Account
+                    </button>
+                    <button className="profile-dropdown-item logout" onClick={handleLogout}>
+                      <FiLogOut size={15} strokeWidth={1.8}/>
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <button
+                  className="profile-btn"
+                  onClick={() => setIsGuestPopupOpen(o => !o)}
+                  aria-label="Sign in">
+                  <FiUser size={22} strokeWidth={1.8}/>
+                </button>
+
+                {isGuestPopupOpen && (
+                  <div className="profile-dropdown guest">
+                    <div className="profile-dropdown-header">
+                      <span className="profile-dropdown-name">Sign In</span>
+                    </div>
+                    <div className="profile-dropdown-divider"/>
                     <Link
-                      to="#"
-                      className="login-option"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleLoginPopup();
-                        login();
-                      }}
-                    >
-                      Customer Login
+                      className="profile-dropdown-item"
+                      to="/sign-in"
+                      onClick={() => setIsGuestPopupOpen(false)}>
+                      <FiUser size={15} strokeWidth={1.8}/>
+                      Customer Sign In
                     </Link>
                     <Link
-                      to="#"
-                      className="login-option"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleLoginPopup();
-                        login({ name: 'Admin' });
-                        navigate('/admin');
-                      }}
-                    >
-                      Admin / Designer Login
+                      className="profile-dropdown-item"
+                      to="/admin/signin"
+                      onClick={() => setIsGuestPopupOpen(false)}>
+                      <FiSettings size={15} strokeWidth={1.8}/>
+                      Admin / Designer Sign In
                     </Link>
                   </div>
-                </>
-              )}
-            </div>
+                )}
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Cart Drawer */}

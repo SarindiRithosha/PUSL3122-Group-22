@@ -223,6 +223,22 @@
   opacity: 0.9;
 }
 
+.profile-logout-btn {
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.profile-logout-btn:hover {
+  color: #DE8B47;
+}
+
 /* Scrollbar Styling */
 .admin-sidebar::-webkit-scrollbar {
   width: 4px;

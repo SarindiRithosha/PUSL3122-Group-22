@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import '../styles/AdminSidebar.css';
 
 const AdminSidebar = ({ collapsed }) => {
   const location = useLocation();
-  const [activePath, setActivePath] = useState(location.pathname);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const navigationItems = [
     {
       path: '/admin/dashboard',
       name: 'Dashboard',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 13H11V3H3V13ZM3 21H11V15H3V21ZM13 21H21V11H13V21ZM13 3V9H21V3H13Z" fill="currentColor" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
         </svg>
       )
     },
@@ -20,9 +25,10 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/room-management',
       name: 'Room Management',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 9V20H4V9L12 3L20 9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 21V7l9-4 9 4v14" />
+          <path d="M9 21V13h6v8" />
+          <path d="M3 21h18" />
         </svg>
       )
     },
@@ -30,9 +36,11 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/furniture-management',
       name: 'Furniture Management',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 8H20V18H4V8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <path d="M8 5V8M16 5V8M6 14H18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 10V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3" />
+          <path d="M2 12v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1H6v-1a2 2 0 0 0-4 0Z" />
+          <path d="M4 19v2" />
+          <path d="M20 19v2" />
         </svg>
       )
     },
@@ -40,9 +48,11 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/design-workspace',
       name: 'Design Workspace',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" fill="none" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 19l7-7 3 3-7 7-3-3z" />
+          <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+          <path d="M2 2l7.586 7.586" />
+          <circle cx="11" cy="11" r="2" />
         </svg>
       )
     },
@@ -50,10 +60,10 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/design-library',
       name: 'Design Library',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 4H20V20H4V4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <path d="M8 8H16V12H8V8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <path d="M8 15H16M8 18H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
         </svg>
       )
     },
@@ -61,9 +71,10 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/customer-orders',
       name: 'Customer Orders',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <path d="M3 6H21M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 0 1-8 0" />
         </svg>
       )
     },
@@ -71,20 +82,22 @@ const AdminSidebar = ({ collapsed }) => {
       path: '/admin/analysis',
       name: 'Analysis',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 21H4V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M7 15L10 10L13 13L18 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
         </svg>
       )
     }
   ];
 
-  const handleNavClick = (path) => {
-    setActivePath(path);
-  };
+  const adminName = user?.name || "Admin User";
+  const adminRole = user?.role || "Admin";
 
-  // Mock admin data - replace with actual auth data later
-  const adminName = "John Designer";
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/signin', { replace: true });
+  };
 
   return (
     <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -104,8 +117,7 @@ const AdminSidebar = ({ collapsed }) => {
           <Link
             key={item.path}
             to={item.path}
-            className={`nav-item ${activePath.startsWith(item.path) ? 'active' : ''}`}
-            onClick={() => handleNavClick(item.path)}
+            className={`nav-item ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
             title={collapsed ? item.name : ''}
           >
             <span className="nav-icon">{item.icon}</span>
@@ -126,7 +138,10 @@ const AdminSidebar = ({ collapsed }) => {
             </div>
             <div className="profile-info">
               <span className="profile-name">{adminName}</span>
-              <span className="profile-role">Admin</span>
+              <span className="profile-role">{adminRole}</span>
+              <button type="button" className="profile-logout-btn" onClick={handleLogout}>
+                Sign Out
+              </button>
             </div>
           </div>
         </div>

@@ -1,41 +1,13 @@
-import React, { useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  listFurniture,
+  deleteFurniture as deleteFurnitureRequest,
+  updateFurniture,
+  resolveAssetUrl,
+} from '../../services/furnitureApi';
 import '../../styles/FurnitureManagement.css';
 
-const mockFurnitureData = [
-  {
-    id: '1',
-    modelId: 'F-CH-001',
-    name: 'Nordic Armchair',
-    category: 'Seating',
-    status: 'Published',
-    dimensions: '0.8m × 0.8m',
-    colors: ['#59768e', '#949494', '#e8e3d9'],
-    type: 'armchair'
-  },
-  {
-    id: '2',
-    modelId: 'F-TB-012',
-    name: 'Oak Dining Table',
-    category: 'Tables',
-    status: 'Published',
-    dimensions: '2.0m × 1.0m',
-    colors: ['#a66e38', '#463220'],
-    type: 'table'
-  },
-  {
-    id: '3',
-    modelId: 'F-SF-045',
-    name: 'Modular L-Sofa',
-    category: 'Seating',
-    status: '', // Third card doesn't have the status tag in the screenshot
-    dimensions: '2.5m × 1.5m',
-    colors: ['#d5c09e', '#557245', '#334c4b'],
-    type: 'sofa'
-  }
-];
-
-// Reusable Icon Components
 const SearchIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#8E8E93" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -65,6 +37,14 @@ const TrashIcon = () => (
   </svg>
 );
 
+const BoxIcon = () => (
+  <svg width="84" height="84" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 16V8C20.9996 7.64927 20.9071 7.30691 20.7315 7.00511C20.556 6.70331 20.3031 6.4521 20 6.276L13 2.276C12.6953 2.09886 12.3508 2.00586 12 2.00586C11.6492 2.00586 11.3047 2.09886 11 2.276L4 6.276C3.6969 6.4521 3.44403 6.70331 3.26846 7.00511C3.09289 7.30691 3.00036 7.64927 3 8V16C3.00036 16.3507 3.09289 16.6931 3.26846 16.9949C3.44403 17.2967 3.6969 17.5479 4 17.724L11 21.724C11.3047 21.9011 11.6492 21.9941 12 21.9941C12.3508 21.9941 12.6953 21.9011 13 21.724L20 17.724C20.3031 17.5479 20.556 17.2967 20.7315 16.9949C20.9071 16.6931 20.9996 16.3507 21 16Z" stroke="#B0B0B0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3.27002 6.95996L12 12.01L20.73 6.95996" stroke="#B0B0B0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 22.08V12" stroke="#B0B0B0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const WarningIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M10.29 3.86L1.82 18C1.64539 18.3024 1.55328 18.6453 1.55447 18.9945C1.55566 19.3438 1.65008 19.6872 1.82819 19.9905C2.0063 20.2937 2.26194 20.5463 2.56985 20.7231C2.87777 20.8999 3.22728 20.9947 3.58 21H20.42C20.7727 20.9947 21.1222 20.8999 21.4301 20.7231C21.7381 20.5463 21.9937 20.2937 22.1718 19.9905C22.3499 19.6872 22.4443 19.3438 22.4455 18.9945C22.4467 18.6453 22.3546 18.3024 22.18 18L13.71 3.86C13.5317 3.56611 13.2807 3.32314 12.9812 3.15345C12.6817 2.98376 12.3437 2.89297 12 2.89297C11.6563 2.89297 11.3183 2.98376 11.0188 3.15345C10.7193 3.32314 10.4683 3.56611 10.29 3.86Z" stroke="#E53E3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(229, 62, 62, 0.1)" />
@@ -79,64 +59,134 @@ const CloseIcon = () => (
   </svg>
 );
 
-// Furniture SVG Generators
-const renderFurnitureSvg = (type) => {
-  switch (type) {
-    case 'armchair':
-      return (
-        <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="25" y="25" width="50" height="50" rx="8" stroke="#B0B0B0" strokeWidth="3" fill="#F9F9F9" />
-          <rect x="15" y="35" width="10" height="30" rx="4" stroke="#B0B0B0" strokeWidth="3" fill="#F9F9F9" />
-          <rect x="75" y="35" width="10" height="30" rx="4" stroke="#B0B0B0" strokeWidth="3" fill="#F9F9F9" />
-          <path d="M 25 35 Q 50 15 75 35" stroke="#B0B0B0" strokeWidth="3" fill="none" strokeLinecap="round" />
-        </svg>
-      );
-    case 'table':
-      return (
-        <svg width="100" height="60" viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="10" width="100" height="50" rx="4" stroke="#B0B0B0" strokeWidth="3" fill="#F9F9F9" />
-          <circle cx="20" cy="20" r="3" fill="#B0B0B0" />
-          <circle cx="100" cy="20" r="3" fill="#B0B0B0" />
-          <circle cx="20" cy="50" r="3" fill="#B0B0B0" />
-          <circle cx="100" cy="50" r="3" fill="#B0B0B0" />
-        </svg>
-      );
-    case 'sofa':
-      return (
-        <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 20 20 L 80 20 L 80 50 L 50 50 L 50 80 L 20 80 Z" stroke="#B0B0B0" strokeWidth="3" fill="#F9F9F9" strokeLinejoin="round" />
-          <path d="M 30 30 L 70 30 L 70 40 L 40 40 L 40 70 L 30 70 Z" stroke="#D0D0D0" strokeWidth="2" fill="none" strokeLinejoin="round" />
-        </svg>
-      );
-    default:
-      return null;
-  }
+const formatDimensions = (dimensions = {}) => {
+  const width = Number(dimensions.width || 0).toFixed(2);
+  const depth = Number(dimensions.depth || 0).toFixed(2);
+  const height = Number(dimensions.height || 0).toFixed(2);
+  return `${width}m × ${depth}m × ${height}m`;
 };
 
 const FurnitureManagement = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
-  const navigate = useNavigate();
-
-  // Delete Modal State
+  const [furnitureItems, setFurnitureItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [statusBusyId, setStatusBusyId] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage('');
+
+        const response = await listFurniture({
+          search: searchTerm.trim() || undefined,
+          category: categoryFilter === 'All Categories' ? undefined : categoryFilter,
+          limit: 100,
+          sortBy: 'updatedAt',
+          order: 'desc',
+        });
+
+        if (active) {
+          setFurnitureItems(response.data || []);
+        }
+      } catch (error) {
+        if (active) {
+          setErrorMessage(error.message || 'Failed to load furniture data.');
+        }
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [categoryFilter, searchTerm]);
+
+  useEffect(() => {
+    if (!isDeleteModalOpen) {
+      return undefined;
+    }
+
+    const onEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsDeleteModalOpen(false);
+        setItemToDelete(null);
+      }
+    };
+
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
+  }, [isDeleteModalOpen]);
+
+  const categories = useMemo(() => {
+    const values = furnitureItems
+      .map((item) => item.category)
+      .filter(Boolean);
+
+    return ['All Categories', ...new Set(values)];
+  }, [furnitureItems]);
 
   const handleDeleteClick = (item) => {
     setItemToDelete(item);
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    console.log(`Deleting item: ${itemToDelete?.name}`);
-    // Simulate delete logic here (e.g API call)
+  const closeDeleteModal = () => {
+    if (isDeleting) {
+      return;
+    }
     setIsDeleteModalOpen(false);
     setItemToDelete(null);
   };
 
-  const cancelDelete = () => {
-    setIsDeleteModalOpen(false);
-    setItemToDelete(null);
+  const confirmDelete = async () => {
+    if (!itemToDelete?._id) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      setErrorMessage('');
+      await deleteFurnitureRequest(itemToDelete._id);
+      setFurnitureItems((prev) => prev.filter((item) => item._id !== itemToDelete._id));
+      closeDeleteModal();
+    } catch (error) {
+      setErrorMessage(error.message || 'Delete failed.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleToggleStatus = async (item) => {
+    const nextStatus = item.status === 'Published' ? 'Draft' : 'Published';
+
+    try {
+      setStatusBusyId(item._id);
+      setErrorMessage('');
+      const response = await updateFurniture(item._id, { status: nextStatus });
+
+      setFurnitureItems((prev) =>
+        prev.map((furniture) =>
+          furniture._id === item._id ? response.data : furniture
+        )
+      );
+    } catch (error) {
+      setErrorMessage(error.message || 'Unable to change status.');
+    } finally {
+      setStatusBusyId('');
+    }
   };
 
   return (
@@ -153,113 +203,165 @@ const FurnitureManagement = () => {
             type="text"
             placeholder="Search furniture..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(event) => setSearchTerm(event.target.value)}
           />
         </div>
 
         <div className="fm-filter">
           <select
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
+            onChange={(event) => setCategoryFilter(event.target.value)}
           >
-            <option>All Categories</option>
-            <option>Seating</option>
-            <option>Tables</option>
-            <option>Beds</option>
-            <option>Storage</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
 
-        <button className="fm-add-btn" onClick={() => navigate('/admin/furniture-management/add')}>
+        <button
+          className="fm-add-btn"
+          type="button"
+          onClick={() => navigate('/admin/furniture-management/add')}
+        >
           + Add Furniture
         </button>
       </div>
 
-      <div className="fm-grid">
-        {mockFurnitureData.map((item) => (
-          <div className="fm-card" key={item.id}>
-            <div className="fm-card-image-area">
-              <div className="fm-card-tags">
-                <span className="fm-tag category">{item.category}</span>
-                {item.status && <span className="fm-tag status">{item.status}</span>}
-              </div>
-              <div className="fm-svg-wrapper">
-                {renderFurnitureSvg(item.type)}
-              </div>
-            </div>
+      {errorMessage && <div className="fm-alert error">{errorMessage}</div>}
 
-            <div className="fm-card-content">
-              <h3>{item.name}</h3>
+      {isLoading ? (
+        <div className="fm-state">Loading furniture assets...</div>
+      ) : null}
 
-              <div className="fm-details-grid">
-                <span className="fm-label">Model ID:</span>
-                <span className="fm-value model-id">{item.modelId}</span>
+      {!isLoading && furnitureItems.length === 0 ? (
+        <div className="fm-state">No furniture found for the current filters.</div>
+      ) : null}
 
-                <span className="fm-label">Default:</span>
-                <span className="fm-value">{item.dimensions}</span>
+      {!isLoading && furnitureItems.length > 0 ? (
+        <div className="fm-grid">
+          {furnitureItems.map((item) => (
+            <div className="fm-card" key={item._id}>
+              <div className="fm-card-image-area">
+                <div className="fm-card-tags">
+                  <span className="fm-tag category">{item.category}</span>
+                  {item.status && <span className="fm-tag status">{item.status}</span>}
+                </div>
 
-                <span className="fm-label">Colors:</span>
-                <div className="fm-color-swatches">
-                  {item.colors.map((color, idx) => (
-                    <span
-                      key={idx}
-                      className="fm-color-swatch"
-                      style={{ backgroundColor: color }}
-                    ></span>
-                  ))}
+                <div className="fm-svg-wrapper">
+                  {item.image2DUrl ? (
+                    <img
+                      className="fm-preview-image"
+                      src={resolveAssetUrl(item.image2DUrl)}
+                      alt={item.name}
+                    />
+                  ) : (
+                    <BoxIcon />
+                  )}
                 </div>
               </div>
 
-              <div className="fm-card-actions">
-                <button className="fm-action-btn edit" onClick={() => navigate(`/admin/furniture-management/edit/${item.id}`)}>Edit</button>
-                <button className="fm-action-btn icon view" title="View Details">
-                  <EyeIcon />
-                </button>
-                <button className="fm-action-btn icon publish" title="Publish/Upload">
-                  <UploadIcon />
-                </button>
-                <button className="fm-action-btn icon delete" title="Delete" onClick={() => handleDeleteClick(item)}>
-                  <TrashIcon />
-                </button>
+              <div className="fm-card-content">
+                <h3>{item.name}</h3>
+
+                <div className="fm-details-grid">
+                  <span className="fm-label">Model ID:</span>
+                  <span className="fm-value model-id">{item.modelId}</span>
+
+                  <span className="fm-label">Default:</span>
+                  <span className="fm-value">{formatDimensions(item.dimensions)}</span>
+
+                  <span className="fm-label">Colors:</span>
+                  <div className="fm-color-swatches">
+                    {(item.colors || []).slice(0, 5).map((color, index) => (
+                      <span
+                        key={`${item._id}-${color}-${index}`}
+                        className="fm-color-swatch"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="fm-card-actions">
+                  <button
+                    type="button"
+                    className="fm-action-btn edit"
+                    onClick={() => navigate(`/admin/furniture-management/edit/${item._id}`)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    className="fm-action-btn icon view"
+                    title="View Details"
+                    onClick={() => navigate(`/furniture/${item._id}`)}
+                  >
+                    <EyeIcon />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="fm-action-btn icon publish"
+                    title={item.status === 'Published' ? 'Unpublish' : 'Publish'}
+                    onClick={() => handleToggleStatus(item)}
+                    disabled={statusBusyId === item._id}
+                  >
+                    <UploadIcon />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="fm-action-btn icon delete"
+                    title="Delete"
+                    onClick={() => handleDeleteClick(item)}
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : null}
 
-      {/* Delete Confirmation Modal Overlay */}
       {isDeleteModalOpen && (
-        <div className="fm-modal-overlay">
-          <div className="fm-modal-content">
+        <div className="fm-modal-overlay" onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            closeDeleteModal();
+          }
+        }}>
+          <div className="fm-modal-content" onClick={(event) => event.stopPropagation()}>
             <div className="fm-modal-header">
               <div className="fm-modal-icon-wrapper">
                 <WarningIcon />
               </div>
-              <button className="fm-modal-close" onClick={cancelDelete}>
+              <button type="button" className="fm-modal-close" onClick={closeDeleteModal}>
                 <CloseIcon />
               </button>
             </div>
 
             <h2 className="fm-modal-title">Delete Furniture Asset?</h2>
             <p className="fm-modal-desc">
-              Are you sure you want to delete <strong>{itemToDelete?.name}</strong>?
-              This action cannot be undone and will remove the item from any active room designs.
+              Are you sure you want to delete <strong>{itemToDelete?.name}</strong>? This action cannot be undone.
             </p>
 
             <div className="fm-modal-actions">
-              <button className="fm-modal-btn cancel" onClick={cancelDelete}>
+              <button type="button" className="fm-modal-btn cancel" onClick={closeDeleteModal}>
                 Cancel
               </button>
-              <button className="fm-modal-btn delete" onClick={confirmDelete}>
-                Yes, Delete
+              <button type="button" className="fm-modal-btn delete" onClick={confirmDelete} disabled={isDeleting}>
+                {isDeleting ? 'Deleting...' : 'Yes, Delete'}
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };
 
 export default FurnitureManagement;
+

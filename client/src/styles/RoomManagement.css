@@ -22,6 +22,29 @@
     margin-bottom: 2rem;
 }
 
+.rm-alert {
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.rm-alert.error {
+    background: #fff4f4;
+    border: 1px solid #ffd4d4;
+    color: #b73636;
+}
+
+.rm-state {
+    border: 1px dashed #dadada;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem;
+    color: #666;
+    margin-bottom: 1.2rem;
+}
+
 /* Toolbar */
 .rm-toolbar {
     display: flex;
@@ -78,6 +101,15 @@
 .rm-filter-btn:hover {
     background-color: #f0f0f0;
     border-color: #ccc;
+}
+
+.rm-filter-select {
+    min-width: 150px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.3rem;
 }
 
 .rm-add-btn {
@@ -147,6 +179,14 @@
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
     letter-spacing: 0.3px;
+}
+
+.rm-status-badge.published {
+    background-color: #46211D;
+}
+
+.rm-status-badge.draft {
+    background-color: #8a6a59;
 }
 
 .rm-svg-wrapper {
@@ -271,6 +311,11 @@
 .rm-action-btn.icon.delete:hover {
     background-color: #fff0f0;
     border-color: #ff4d4f;
+}
+
+.rm-action-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 /* Responsive */

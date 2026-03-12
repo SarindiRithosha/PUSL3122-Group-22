@@ -1,0 +1,775 @@
+/* ─── Design Workspace Root ─────────────────────────────────────────────────── */
+.dw-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: #F0F2F5;
+  overflow: hidden;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ─── Top Bar ────────────────────────────────────────────────────────────────── */
+.dw-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E8ECEF;
+  padding: 0 16px;
+  height: 56px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 12px;
+  z-index: 10;
+}
+
+.dw-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+}
+
+.dw-name-display {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A2E;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.dw-name-display:hover {
+  border-color: #E2E8F0;
+  background: #F7F9FC;
+}
+
+.dw-name-input {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A2E;
+  padding: 4px 8px;
+  border: 1.5px solid #DE8B47;
+  border-radius: 6px;
+  outline: none;
+  background: #FFFDF9;
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.dw-name-saved {
+  font-size: 12px;
+  color: #94A3B8;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+/* Center controls */
+.dw-topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.dw-view-toggle {
+  display: flex;
+  align-items: center;
+  background: #EDEEF1;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.dw-view-btn {
+  padding: 5px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: #64748B;
+  transition: all 0.15s;
+}
+
+.dw-view-btn.active {
+  background: #FFFFFF;
+  color: #1A1A2E;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.dw-history-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #EDEEF1;
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.dw-hist-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dw-hist-btn:hover:not(:disabled) {
+  background: #FFFFFF;
+}
+
+.dw-hist-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Right buttons */
+.dw-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dw-btn-save {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: #DE8B47;
+  border: 1.5px solid #DE8B47;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.dw-btn-save:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.dw-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.dw-btn-publish {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: #3E2723;
+  border: 1.5px solid #3E2723;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.dw-btn-publish:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.dw-btn-publish:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ─── Body Layout ────────────────────────────────────────────────────────────── */
+.dw-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ─── Canvas Area ────────────────────────────────────────────────────────────── */
+.dw-canvas-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #EDEEF1;
+  min-width: 0;
+}
+
+.dw-zoom-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dw-zoom-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  transition: background 0.12s;
+}
+
+.dw-zoom-btn:hover { background: #F3F4F6; }
+
+.dw-zoom-label {
+  text-align: center;
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 500;
+  padding: 2px 0;
+}
+
+.dw-canvas-scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.dw-canvas-2d-wrap {
+  display: inline-block;
+  position: relative;
+}
+
+.dw-canvas-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #94A3B8;
+  font-size: 14px;
+  text-align: center;
+}
+
+.dw-canvas-3d-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+/* ─── Right Panel ────────────────────────────────────────────────────────────── */
+.dw-right-panel {
+  width: 280px;
+  flex-shrink: 0;
+  background: #FFFFFF;
+  border-left: 1px solid #E8ECEF;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dw-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid #E8ECEF;
+  flex-shrink: 0;
+}
+
+.dw-panel-tab {
+  flex: 1;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.dw-panel-tab.active {
+  color: #DE8B47;
+  border-bottom-color: #DE8B47;
+  font-weight: 700;
+}
+
+.dw-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ─── Catalog ─────────────────────────────────────────────────────────────────  */
+.dw-catalog {
+  padding: 12px;
+}
+
+.dw-catalog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.dw-catalog-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8B5E3C;
+}
+
+.dw-cat-select {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  outline: none;
+  color: #374151;
+  background: #FAFAFA;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+}
+
+.dw-catalog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dw-catalog-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #F0F0F0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #FAFAFA;
+}
+
+.dw-catalog-item:hover {
+  border-color: #DE8B47;
+  background: #FFF8F3;
+  transform: translateX(2px);
+}
+
+.dw-catalog-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dw-catalog-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dw-catalog-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.dw-catalog-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A2E;
+  line-height: 1.3;
+}
+
+/* ─── Properties ──────────────────────────────────────────────────────────────  */
+.dw-properties {
+  padding: 12px;
+}
+
+.dw-empty-panel {
+  font-size: 12px;
+  color: #94A3B8;
+  text-align: center;
+  padding: 24px 12px;
+  line-height: 1.5;
+}
+
+.dw-prop-section { }
+
+.dw-prop-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3E2723;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.dw-prop-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #F7F8FA;
+  gap: 8px;
+}
+
+.dw-prop-row.no-border {
+  border-bottom: none;
+}
+
+.dw-prop-label {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.dw-prop-value {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.dw-prop-value.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #64748B;
+}
+
+.dw-prop-group {
+  margin: 10px 0;
+}
+
+.dw-prop-group > .dw-prop-label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Color swatches */
+.dw-color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.dw-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+  outline: none;
+}
+
+.dw-swatch:hover {
+  transform: scale(1.15);
+}
+
+.dw-swatch.active {
+  border-color: #DE8B47;
+  box-shadow: 0 0 0 2px rgba(222, 139, 71, 0.3);
+}
+
+/* Scale buttons */
+.dw-scale-options {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.dw-scale-btn {
+  padding: 4px 10px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  background: #FAFAFA;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.dw-scale-btn:hover { border-color: #DE8B47; color: #DE8B47; }
+.dw-scale-btn.active {
+  background: #DE8B47;
+  border-color: #DE8B47;
+  color: #FFFFFF;
+}
+
+/* Rotation slider */
+.dw-rotation-slider {
+  flex: 1;
+  accent-color: #DE8B47;
+}
+
+/* Toggle */
+.dw-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.dw-toggle input { display: none; }
+
+.dw-toggle-track {
+  width: 36px;
+  height: 20px;
+  background: #CBD5E0;
+  border-radius: 10px;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.dw-toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.dw-toggle input:checked + .dw-toggle-track {
+  background: #DE8B47;
+}
+
+.dw-toggle input:checked + .dw-toggle-track::after {
+  transform: translateX(16px);
+}
+
+/* Property action buttons */
+.dw-prop-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dw-prop-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: all 0.15s;
+}
+
+.dw-prop-btn.rotate {
+  background: #FFF8F3;
+  border-color: #DE8B47;
+  color: #DE8B47;
+}
+
+.dw-prop-btn.rotate:hover { background: #DE8B47; color: #FFFFFF; }
+
+.dw-prop-btn.remove {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #EF4444;
+}
+
+.dw-prop-btn.remove:hover { background: #EF4444; color: #FFFFFF; border-color: #EF4444; }
+
+/* Dim inputs in room props */
+.dw-dim-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.dw-dim-label {
+  font-size: 11px;
+  color: #64748B;
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.dw-dim-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+
+.dw-dim-input:focus { border-color: #DE8B47; }
+
+.dw-dim-unit {
+  font-size: 11px;
+  color: #94A3B8;
+  width: 16px;
+}
+
+.dw-save-changes-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px;
+  background: #3E2723;
+  border: none;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.dw-save-changes-btn:hover { opacity: 0.88; }
+
+/* Free color picker row */
+.dw-color-pick-free {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dw-color-pick-free input[type="color"] {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px;
+  background: #FAFAFA;
+}
+
+.dw-color-pick-label {
+  font-size: 11px;
+  color: #94A3B8;
+  font-style: italic;
+}
+
+/* Change room button */
+.dw-reopen-setup {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 7px 14px;
+  background: rgba(255,255,255,0.92);
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3E2723;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: all 0.15s;
+  z-index: 5;
+}
+
+.dw-reopen-setup:hover {
+  background: #FFFFFF;
+  border-color: #DE8B47;
+  color: #DE8B47;
+}
+
+.dw-back-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1.5px solid #E2E8F0; background: #fff; color: #64748B;
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.dw-back-btn:hover { border-color: #DE8B47; color: #DE8B47; background: #FDF4EC; }
+
+.dw-view-mode-label {
+  display: flex; align-items: center; gap: 8px; color: #1e293b;
+}
+.dw-view-mode-label span:first-of-type {
+  font-size: 1rem; font-weight: 600;
+}
+.dw-readonly-badge {
+  padding: 3px 8px; border-radius: 20px;
+  background: #E0F2FE; color: #0369A1;
+  font-size: 0.72rem; font-weight: 700; white-space: nowrap;
+}
+
+.dw-readonly-banner {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; margin: 0 0 6px;
+  background: #EFF6FF; border: 1px solid #BFDBFE;
+  border-radius: 8px; font-size: 0.8rem; color: #1D4ED8; font-weight: 500;
+}
+
+.dw-readonly-notice {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 12px; margin-bottom: 12px;
+  background: #EFF6FF; border-radius: 8px;
+  font-size: 0.78rem; color: #1D4ED8; font-weight: 500;
+  border: 1px solid #BFDBFE;
+}
+
+.dw-catalog-item-disabled {
+  opacity: 0.5; cursor: not-allowed !important;
+}
+.dw-catalog-item-disabled:hover { background: transparent !important; }
+
+.dw-btn-choose-room {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 8px;
+  background: #fff; border: 1.5px solid #E2E8F0;
+  color: #475569; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.dw-btn-choose-room:hover {
+  border-color: #DE8B47; color: #DE8B47; background: #FDF4EC;
+}
+.dw-btn-choose-room svg { flex-shrink: 0; }
+
+.dw-zoom-3d {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10;
+}

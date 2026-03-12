@@ -1,0 +1,59 @@
+/* ─── DeleteConfirmModal ─────────────────────────────────────────── */
+.dcm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1300;
+  animation: dcm-fade 0.18s ease;
+}
+@keyframes dcm-fade { from{opacity:0} to{opacity:1} }
+
+.dcm-modal {
+  background: #fff; border-radius: 18px;
+  width: 420px; max-width: calc(100vw - 32px);
+  padding: 36px 32px 28px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: dcm-pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes dcm-pop { from{transform:scale(0.88);opacity:0} to{transform:scale(1);opacity:1} }
+
+.dcm-icon-wrap {
+  width: 60px; height: 60px; margin: 0 auto 16px;
+  background: #FEF2F2; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.dcm-title {
+  margin: 0 0 10px; font-size: 1.15rem; font-weight: 700; color: #1a1a1a;
+}
+
+.dcm-body {
+  margin: 0 0 26px; font-size: 0.9rem; color: #64748B; line-height: 1.6;
+}
+.dcm-body strong { color: #1e293b; }
+
+.dcm-footer { display: flex; gap: 10px; }
+.dcm-btn-cancel {
+  flex: 1; padding: 11px;
+  border: 1.5px solid #E2E8F0; border-radius: 10px;
+  background: #fff; font-size: 0.9rem; font-weight: 600; color: #475569;
+  cursor: pointer; transition: all 0.15s;
+}
+.dcm-btn-cancel:hover:not(:disabled) { background: #F8FAFC; border-color: #CBD5E1; }
+.dcm-btn-delete {
+  flex: 1.4; padding: 11px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: #EF4444; border: none; border-radius: 10px;
+  color: #fff; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+}
+.dcm-btn-delete:hover:not(:disabled) { background: #DC2626; }
+.dcm-btn-delete:disabled, .dcm-btn-cancel:disabled { opacity: 0.55; cursor: not-allowed; }
+.dcm-spinner {
+  width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff; border-radius: 50%;
+  animation: dcm-spin 0.7s linear infinite; display: inline-block;
+}
+@keyframes dcm-spin { to{transform:rotate(360deg)} }

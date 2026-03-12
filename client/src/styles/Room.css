@@ -1,8 +1,7 @@
 /* Room.css */
 
 .room-page-wrapper {
-    background-color: #F8F6F4;
-    /* Very subtle off-white/beige */
+    background-color: #FAF9F6;
     min-height: 100vh;
     padding: 4rem 2rem;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -123,4 +122,65 @@
     .room-page-wrapper {
         padding: 2rem 1rem;
     }
+}
+
+/* Room.css — additions to append after existing styles */
+
+/* ── Error / empty states ─────────────────────────────────────────────────── */
+.room-error {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6C5D53;
+}
+.room-retry-btn {
+  margin-top: 12px;
+  padding: 10px 24px;
+  background: #C8973A;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.room-retry-btn:hover { opacity: 0.88; }
+
+.room-empty {
+  text-align: center;
+  color: #8C7C73;
+  font-size: 1rem;
+  padding: 3rem 1rem;
+}
+
+/* ── Loading skeleton ─────────────────────────────────────────────────────── */
+.room-card-skeleton {
+  cursor: default;
+  pointer-events: none;
+  animation: cwFadeIn 0.3s ease;
+}
+
+.room-skeleton-img {
+  width: 100%;
+  padding-bottom: 60%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #EBE4DE 25%, #F8F3EF 50%, #EBE4DE 75%);
+  background-size: 200% 100%;
+  animation: roomSkel 1.4s ease infinite;
+  margin-bottom: 1.2rem;
+}
+
+.room-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #EBE4DE 25%, #F8F3EF 50%, #EBE4DE 75%);
+  background-size: 200% 100%;
+  animation: roomSkel 1.4s ease infinite;
+  margin-bottom: 8px;
+}
+.room-skeleton-line.wide { width: 70%; }
+.room-skeleton-line      { width: 45%; }
+
+@keyframes roomSkel {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
 }
