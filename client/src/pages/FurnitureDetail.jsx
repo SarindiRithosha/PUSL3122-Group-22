@@ -164,7 +164,24 @@ const FurnitureDetail = () => {
 
                         {/* Actions */}
                         <div className="cd-action-buttons">
-                            <button className="cd-btn-primary">
+                            <button className="cd-btn-primary" onClick={() => {
+                                // push current furniture to localStorage cart with quantity
+                                const item = {
+                                  id: id,
+                                  name: furnitureData.name,
+                                  price: parseInt(furnitureData.price.replace(/[^0-9]/g, ''), 10),
+                                  image: '',
+                                };
+                                const existing = JSON.parse(localStorage.getItem('cart') || '[]');
+                                const idx = existing.findIndex(i => i.id === item.id);
+                                if (idx > -1) {
+                                  existing[idx].quantity += quantity;
+                                } else {
+                                  existing.push({ ...item, quantity });
+                                }
+                                localStorage.setItem('cart', JSON.stringify(existing));
+                                alert('Added to cart');
+                            }}>
                                 <CartIcon />
                                 Add to Cart
                             </button>

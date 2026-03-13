@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../styles/DesignCatalog.css';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 const initialDesigns = [
   {
@@ -79,56 +78,59 @@ const DesignCatalog = () => {
     );
   };
 
-    return (
-      <div className="design-catalog-page">
-        <h1>Design Gallery</h1>
-        <p className="tagline">Browse professionally curated room designs and try them out</p>
-        <div className="filters">
-          <select value={theme} onChange={e => setTheme(e.target.value)}>
-            {themes.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-          <select value={room} onChange={e => setRoom(e.target.value)}>
-            {rooms.map(r => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
-        </div>
+  return (
+    <div className="design-catalog-page">
+      <h1>Design Gallery</h1>
+      <p className="tagline">Browse professionally curated room designs and try them out</p>
+      <div className="filters">
+        <select value={theme} onChange={e => setTheme(e.target.value)}>
+          {themes.map(t => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        <select value={room} onChange={e => setRoom(e.target.value)}>
+          {rooms.map(r => (
+            <option key={r} value={r}>{r}</option>
+          ))}
+        </select>
+        {/* Filter button completely removed */}
+      </div>
 
-        <div className="design-grid">
-          {filtered.map(design => (
-            <div className="design-card" key={design.id}>
-              <div className="design-image">
-                {design.image ? (
-                  <img src={design.image} alt={design.title} />
-                ) : (
-                  <div className="placeholder" />
-                )}
+      <div className="design-grid">
+        {filtered.map(design => (
+          <div className="design-card" key={design.id}>
+            <div className="design-image">
+              {design.image ? (
+                <img src={design.image} alt={design.title} />
+              ) : (
+                <div className="placeholder" />
+              )}
+            </div>
+            <div className="design-info">
+              <div className="design-header">
+                <h3 className="design-card-title">{design.title}</h3>
+                <button
+                  className={`fav-btn ${favorites.includes(design.id) ? 'active' : ''}`}
+                  onClick={() => toggleFavorite(design.id)}
+                  aria-label="Add to favorites"
+                >
+                  <span className="material-icons">
+                    {favorites.includes(design.id) ? 'favorite' : 'favorite_border'}
+                  </span>
+                </button>
               </div>
-              <div className="design-info">
-                <div className="design-header">
-                  <h3 className="design-card-title">{design.title}</h3>
-                  <button
-                    className={`fav-btn ${favorites.includes(design.id) ? 'active' : ''}`}
-                    onClick={() => toggleFavorite(design.id)}
-                    aria-label="Add to favorites"
-                  >
-                    {favorites.includes(design.id) ? <FaHeart /> : <FaRegHeart />}
-                  </button>
-                </div>
-                <p className="design-desc">{design.description}</p>
-                <div className="design-tags">
-                  <span className="tag">{design.theme}</span>
-                  <span className="tag room-tag">{design.room}</span>
-                  <span className="tag items-tag">{design.items} items</span>
-                </div>
+              <p className="design-desc">{design.description}</p>
+              <div className="design-tags">
+                <span className="tag">{design.theme}</span>
+                <span className="tag room-tag">{design.room}</span>
+                <span className="tag items-tag">{design.items} items</span>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  export default DesignCatalog;
+export default DesignCatalog;

@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../styles/Dashboard.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 // Mock data for the dashboard
 const stats = {
@@ -16,12 +17,15 @@ const recentDesigns = [
 ];
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  const adminName = user?.name || user?.email || 'Admin';
+
   return (
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
         <div className="dashboard-header-text">
-          <h1>Welcome, Bindya!</h1>
+          <h1>Welcome, {adminName}!</h1>
           <p className="dashboard-subtitle">Manage your furniture, room templates, and active design consultations.</p>
         </div>
         <button className="new-project-btn">
