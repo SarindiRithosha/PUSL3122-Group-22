@@ -147,7 +147,7 @@ const CustomerHeader = () => {
                       to="/admin/signin"
                       onClick={() => setIsGuestPopupOpen(false)}>
                       <FiSettings size={15} strokeWidth={1.8}/>
-                      Admin / Designer Sign In
+                      Admin(Designer) Sign In
                     </Link>
                   </div>
                 )}
