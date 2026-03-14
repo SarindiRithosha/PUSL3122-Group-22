@@ -16,7 +16,7 @@ import RoomSetupModal    from '../../components/RoomSetupModal';
 import SaveDesignModal   from '../../components/SaveDesignModal';
 import '../../styles/DesignWorkspace.css';
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
+// ─── Icons 
 const SaveIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -74,7 +74,7 @@ const EyeIcon = () => (
   </svg>
 );
 
-// ─── Canvas constants ─────────────────────────────────────────────────────────
+// ─── Canvas constants 
 const CANVAS_ROOM_PX = 380;
 const getPxPerMeter  = (w, l) => CANVAS_ROOM_PX / Math.max(w || 4, l || 4, 1);
 
@@ -87,7 +87,7 @@ const getRoomPoints = (shape, widthM, lengthM, ppm) => {
   return [[0,0],[w,0],[w,l],[0,l]];
 };
 
-// ─── Collision (metres) ───────────────────────────────────────────────────────
+// ─── Collision (metres) 
 const checkCollisions = (items, room) => {
   const colliding = new Set();
   const W = room?.dimensions?.width  || 4;
@@ -107,7 +107,7 @@ const checkCollisions = (items, room) => {
   return colliding;
 };
 
-// ─── 2D Canvas ────────────────────────────────────────────────────────────────
+// ─── 2D Canvas 
 const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onCanvasClick, zoom, collisions, readOnly }) => {
   const svgRef     = useRef(null);
   const [dragging, setDragging]   = useState(null);
@@ -253,14 +253,14 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
 //   World Z → room length (near = -L/2, far  = +L/2)
 //   World Y → up
 //
-// L-Shape vertices (world XZ, top-right quadrant removed):
+// L-Shape vertices:
 //   TL(-W/2, -L/2)   TR(+W/2, -L/2)
 //   MR(+W/2,   0  )  IC(  0,    0  )
 //   BI(  0,  +L/2 )  BL(-W/2, +L/2)
 //
 // KEY: ShapeGeometry is built in XY space.
 //      mesh rotation=[-π/2, 0, 0] maps:
-//        shape-X → world-X  ✓
+//        shape-X → world-X  
 //        shape-Y → world-Z  BUT with a sign flip: shape +Y → world -Z
 //      So we must NEGATE the Z values when building the shape.
 //
@@ -281,12 +281,8 @@ const WallSeg = ({ x, z, lenX, lenZ, H, wc }) => {
   );
 };
 
-// Build an L-shape or rectangle floor directly as a BufferGeometry in XZ space.
-// Using BufferGeometry avoids the ShapeGeometry Y-axis sign-flip entirely.
+
 const buildFloorBuffer = (isL, W, L) => {
-  // triangulate the polygon manually
-  // Rectangle: 2 triangles
-  // L-Shape:   4 triangles (polygon split into non-overlapping tris)
   let positions, indices;
   if (isL) {
     // 6 vertices (XZ, Y=0):
@@ -392,10 +388,7 @@ const RoomMesh3D = ({ room }) => {
   );
 };
 
-// ─── 3D Furniture item ────────────────────────────────────────────────────────
-// Mirrors createPreviewMaterial from FurnitureForm:
-//   shading ON  → clone the original PBR material then tint (full realism)
-//   shading OFF → flat MeshBasicMaterial (unlit / matte)
+// ─── 3D Furniture item 
 const createFurnitureMaterial = (sourceMaterial, tintColor, shadingEnabled) => {
   if (!sourceMaterial || typeof sourceMaterial.clone !== 'function') return sourceMaterial;
   if (shadingEnabled) {
@@ -514,7 +507,7 @@ const DragPlane = ({ active, onMove, onEnd }) => {
   );
 };
 
-// ─── Full 3D Scene ────────────────────────────────────────────────────────────
+// ─── Full 3D Scene 
 const Scene3D = ({ room, placedItems, selectedId, collisions, onSelectItem, onMoveItem3D, readOnly, orbitRef }) => {
   const W = room?.dimensions?.width  || 4;
   const L = room?.dimensions?.length || 4;
@@ -601,7 +594,7 @@ const Scene3D = ({ room, placedItems, selectedId, collisions, onSelectItem, onMo
   );
 };
 
-// ─── Properties panels ────────────────────────────────────────────────────────
+// ─── Properties panels 
 const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, readOnly }) => (
   <div className="dw-prop-section">
     <h4 className="dw-prop-title">{item.name}</h4>
@@ -822,8 +815,6 @@ const DesignWorkspace = () => {
   const { id }        = useParams();
   const [searchParams]= useSearchParams();
 
-  // mode: 'new' | 'edit' | 'view'
-  // viewStart: '2D' | '3D'  (only relevant for view mode)
   const mode      = searchParams.get('mode') || (id ? 'edit' : 'new');
   const viewStart = searchParams.get('view') || '2D';
   const readOnly  = mode === 'view';
@@ -884,7 +875,6 @@ const DesignWorkspace = () => {
 
   useEffect(() => { setCollisions(checkCollisions(placedItems, room)); }, [placedItems, room]);
 
-  // historyIndex is kept in a ref alongside state so pushHistory never captures stale values
   const historyIndexRef = useRef(-1);
 
   const pushHistory = useCallback((items) => {

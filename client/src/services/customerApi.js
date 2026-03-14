@@ -1,9 +1,5 @@
-// client/src/services/customerApi.js
-// Public and customer-authenticated API helpers (no admin token needed).
-
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
-/** Resolve a relative asset path returned by the backend into a full URL. */
 export const resolveAssetUrl = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
@@ -35,7 +31,6 @@ const request = async (path, options = {}) => {
   return body;
 };
 
-// ── Public (no auth required) ─────────────────────────────────────────────────
 export const listPublishedRooms = () =>
   request("/public/rooms");
 
@@ -55,7 +50,7 @@ export const listPublishedDesigns = () =>
 export const getPublishedDesign = (id) =>
   request(`/public/designs/${id}`);
 
-// ── Customer authenticated ────────────────────────────────────────────────────
+// ── Customer authenticated 
 export const listMyDesigns   = ()            => request("/customer/designs");
 export const getMyDesignById = (id)          => request(`/customer/designs/${id}`);
 export const createMyDesign  = (payload)     => request("/customer/designs",       { method: "POST",   body: JSON.stringify(payload) });

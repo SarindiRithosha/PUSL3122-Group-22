@@ -5,7 +5,7 @@ import { listPublishedFurniture, resolveAssetUrl } from "../services/customerApi
 import { useCart } from "../contexts/CartContext";
 import "../styles/FurnitureCatalog.css";
 
-// ── localStorage wishlist helpers ─────────────────────────────────────────────
+// ── localStorage wishlist helpers 
 const WL_KEY = "furniplan_wishlist_furniture";
 const loadWL  = () => { try { return JSON.parse(localStorage.getItem(WL_KEY) || "{}"); } catch { return {}; } };
 const saveWL  = (wl) => { try { localStorage.setItem(WL_KEY, JSON.stringify(wl)); } catch {} };
@@ -30,7 +30,6 @@ export default function FurnitureCatalog() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortBy,           setSortBy]           = useState("newest");
 
-  // Fetch published furniture — sort param maps to server's expected values
   useEffect(() => {
     setLoading(true);
     const sort =

@@ -1,4 +1,3 @@
-// server/models/CustomerDesign.js
 const mongoose = require("mongoose");
 
 const placedItemSchema = new mongoose.Schema(

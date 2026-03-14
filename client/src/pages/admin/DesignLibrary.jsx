@@ -4,7 +4,6 @@ import { listDesigns, deleteDesign } from '../../services/designApi';
 import DeleteConfirmModal from '../../components/DeleteConfirmModal';
 import '../../styles/DesignLibrary.css';
 
-// ─── Filter option lists (mirrors SaveDesignModal) ─────────────────────────
 const DESIGN_STYLES = [
   'Scandinavian','Minimalist','Traditional','Modern','Industrial',
   'Bohemian','Contemporary','Coastal','Rustic','Art Deco','Other',
@@ -15,7 +14,7 @@ const ROOM_TYPES = [
 ];
 
 
-// ─── Icons ─────────────────────────────────────────────────────────────────
+// ─── Icons 
 const SearchIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -69,7 +68,7 @@ const XIcon = () => (
   </svg>
 );
 
-// ─── Mini room preview ──────────────────────────────────────────────────────
+// ─── Mini room preview 
 const RoomPreview = ({ floorColor, wallColor, shape }) => {
   const fc = floorColor || '#C8A882';
   const wc = wallColor  || '#8B7355';
@@ -93,14 +92,14 @@ const RoomPreview = ({ floorColor, wallColor, shape }) => {
   );
 };
 
-// ─── Status badge ───────────────────────────────────────────────────────────
+// ─── Status badge 
 const StatusBadge = ({ status, isFinalized }) => {
   if (isFinalized) return <span className="dl-badge dl-badge-finalized">✓ Finalized</span>;
   if (status === 'Published') return <span className="dl-badge dl-badge-published">Published</span>;
   return <span className="dl-badge dl-badge-draft">Draft</span>;
 };
 
-// ─── Empty state ────────────────────────────────────────────────────────────
+// ─── Empty state 
 const EmptyState = ({ onNew, hasFilters }) => (
   <div className="dl-empty">
     <div className="dl-empty-icon">
@@ -114,7 +113,7 @@ const EmptyState = ({ onNew, hasFilters }) => (
   </div>
 );
 
-// ─── Design card ────────────────────────────────────────────────────────────
+// ─── Design card 
 const DesignCard = ({ design, onOpen2D, onOpen3D, onEdit, onDelete }) => {
   const itemCount = design.itemCount ?? design.placedItems?.length ?? 0;
   const dateStr   = new Date(design.updatedAt || design.createdAt).toLocaleDateString('en-US', {
@@ -196,7 +195,7 @@ const DesignCard = ({ design, onOpen2D, onOpen3D, onEdit, onDelete }) => {
   );
 };
 
-// ─── Active filter pill ─────────────────────────────────────────────────────
+// ─── Active filter pill 
 const FilterPill = ({ label, onRemove }) => (
   <span className="dl-filter-pill">
     {label}
@@ -204,7 +203,7 @@ const FilterPill = ({ label, onRemove }) => (
   </span>
 );
 
-// ─── Main page ──────────────────────────────────────────────────────────────
+// ─── Main page 
 const DesignLibrary = () => {
   const navigate = useNavigate();
 

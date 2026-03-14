@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import { listPublishedDesigns } from "../services/customerApi";
 import "../styles/DesignCatalog.css";
 
-// ── localStorage wishlist helpers ─────────────────────────────────────────────
 const WL_KEY = "furniplan_wishlist_designs";
 const loadWL  = () => { try { return JSON.parse(localStorage.getItem(WL_KEY) || "{}"); } catch { return {}; } };
 const saveWL  = (wl) => { try { localStorage.setItem(WL_KEY, JSON.stringify(wl)); } catch {} };
 
-// ── Room preview (SVG) ────────────────────────────────────────────────────────
+// ── Room preview (SVG) 
 const RoomPreview = ({ floorColor, wallColor, shape }) => {
   const fc = floorColor || "#C8A882";
   const wc = wallColor  || "#8B7355";
@@ -32,7 +31,6 @@ const RoomPreview = ({ floorColor, wallColor, shape }) => {
   );
 };
 
-// ── Heart icons (inline SVG — replaces material-icons) ────────────────────────
 const HeartFilled = () => (
   <svg width="18" height="18" viewBox="0 0 24 24"
     fill="currentColor" stroke="currentColor" strokeWidth="1.5"
@@ -58,7 +56,6 @@ const DesignCatalog = () => {
   const [loading, setLoading] = useState(true);
   const [wishlist,setWishlist]= useState(loadWL);
 
-  // Fetch published designs — no admin token needed
   useEffect(() => {
     setLoading(true);
     listPublishedDesigns()
@@ -80,7 +77,6 @@ const DesignCatalog = () => {
       if (next[design._id]) {
         delete next[design._id];
       } else {
-        // Store enough fields for Myaccount.jsx favorites card to render
         next[design._id] = {
           _id:         design._id,
           name:        design.name,

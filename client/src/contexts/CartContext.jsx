@@ -1,4 +1,3 @@
-// client/src/contexts/CartContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { resolveAssetUrl } from '../services/customerApi';
 import '../styles/CartToast.css';

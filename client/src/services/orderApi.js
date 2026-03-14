@@ -2,9 +2,6 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-/**
- * Create a new order
- */
 export const createOrder = async (orderData) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/public/orders`, orderData);
@@ -15,9 +12,6 @@ export const createOrder = async (orderData) => {
   }
 };
 
-/**
- * Get customer's orders (requires authentication)
- */
 export const getCustomerOrders = async (token) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/customer/orders`, {
@@ -32,9 +26,6 @@ export const getCustomerOrders = async (token) => {
   }
 };
 
-/**
- * Get all orders (admin only)
- */
 export const getAllOrders = async (token, params = {}) => {
   try {
     const queryParams = new URLSearchParams();
@@ -57,9 +48,6 @@ export const getAllOrders = async (token, params = {}) => {
   }
 };
 
-/**
- * Update order status (admin only)
- */
 export const updateOrderStatus = async (token, orderId, updateData) => {
   try {
     const response = await axios.patch(

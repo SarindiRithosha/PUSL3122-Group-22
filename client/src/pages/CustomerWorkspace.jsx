@@ -1,4 +1,3 @@
-// client/src/pages/CustomerWorkspace.jsx
 import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -20,7 +19,7 @@ import {
 import { useCart } from '../contexts/CartContext';
 import '../styles/CustomerWorkspace.css';
 
-// ─── SVG Icon helpers ─────────────────────────────────────────────────────────
+// ─── SVG Icon helpers 
 const Svg = ({ children, size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -45,7 +44,7 @@ const TrashIcon   = () => (
   </svg>
 );
 
-// ─── Canvas constants ─────────────────────────────────────────────────────────
+// ─── Canvas constants 
 const CANVAS_ROOM_PX = 380;
 const getPxPerMeter  = (w, l) => CANVAS_ROOM_PX / Math.max(w || 4, l || 4, 1);
 
@@ -58,7 +57,7 @@ const getRoomPoints = (shape, wM, lM, ppm) => {
   return [[0,0],[w,0],[w,l],[0,l]];
 };
 
-// ─── Collision detection (AABB, metres) ──────────────────────────────────────
+// ─── Collision detection (AABB, metres) 
 const checkCollisions = (items, room) => {
   const hit = new Set();
   const RW = room?.dimensions?.width  || 4;
@@ -78,9 +77,7 @@ const checkCollisions = (items, room) => {
   return hit;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 2D SVG CANVAS
-// ─────────────────────────────────────────────────────────────────────────────
 const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onCanvasClick, zoom, collisions }) => {
   const svgRef     = useRef(null);
   const [dragging, setDragging] = useState(null);
@@ -225,9 +222,7 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 3D ROOM GEOMETRY
-// ─────────────────────────────────────────────────────────────────────────────
 const WALL_T = 0.12;
 
 const WallSeg = ({ x, z, lenX, lenZ, H, wc }) => {
@@ -296,9 +291,7 @@ const RoomMesh3D = ({ room }) => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 3D FURNITURE
-// ─────────────────────────────────────────────────────────────────────────────
 const mkMat = (src, tint, shading) => {
   if (!src || typeof src.clone !== 'function') return src;
   if (shading) {
@@ -464,9 +457,7 @@ const Scene3D = ({ room, placedItems, selectedId, collisions, onSelectItem, onMo
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // PROPERTIES PANELS
-// ─────────────────────────────────────────────────────────────────────────────
 const RoomProperties = ({ room, onUpdate }) => (
   <div className="cw-prop-section">
     <h4 className="cw-prop-title">{room.name || 'Room'}</h4>
@@ -608,7 +599,6 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
 );
 
 const HelpIcon    = () => <Svg size={18}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></Svg>;
-// ─────────────────────────────────────────────────────────────────────────────
 const HomeIcon   = () => <Svg size={22}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Svg>;
 const SofaIcon   = () => <Svg size={22}><rect x="2" y="9" width="20" height="11" rx="2"/><path d="M6 9V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M2 15h20"/></Svg>;
 const TourRotate = () => <Svg size={22}><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></Svg>;
@@ -648,9 +638,7 @@ const TourBubble = ({ step, index, total, onNext, onSkip }) => (
   </div>
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
 // SAVE MODAL
-// ─────────────────────────────────────────────────────────────────────────────
 const PackageIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/>
@@ -706,17 +694,13 @@ const SaveModal = ({ defaultName, itemCount, onConfirm, onClose, isSaving }) => 
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // MAIN CUSTOMER WORKSPACE
-// ─────────────────────────────────────────────────────────────────────────────
 const CustomerWorkspace = () => {
   const navigate  = useNavigate();
   const { addToCart } = useCart();
-  // roomId  → coming fresh from Room page (first visit)
-  // designId → coming from My Saved Designs (reload existing)
   const { roomId, designId: savedId } = useParams();
 
-  // ── core state ──────────────────────────────────────────────────────────────
+  // ── core state 
   const [room,        setRoom]        = useState(null);
   const [placedItems, setPlacedItems] = useState([]);
   const [selectedId,  setSelectedId]  = useState(null);
@@ -727,25 +711,25 @@ const CustomerWorkspace = () => {
   const [categories,  setCategories]  = useState([]);
   const [selCat,      setSelCat]      = useState('all');
 
-  // ── save state ─────────────────────────────────────────────────────────────
+  // ── save state 
   const [isSaving,     setIsSaving]     = useState(false);
   const [designId,     setDesignId]     = useState(savedId || null);
   const [designName,   setDesignName]   = useState('My Design');
   const [showSave,     setShowSave]     = useState(false);
   const [saveMsg,      setSaveMsg]      = useState('');
 
-  // ── tour state ─────────────────────────────────────────────────────────────
+  // ── tour state 
   const [tourStep,   setTourStep]   = useState(0);
   const [showTour,   setShowTour]   = useState(false);  // triggered by help button
 
-  // ── history ────────────────────────────────────────────────────────────────
+  // ── history 
   const [history,      setHistory]      = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const historyIndexRef = useRef(-1);
 
   const orbitRef = useRef(null);
 
-  // ── push to undo stack ─────────────────────────────────────────────────────
+  // ── push to undo stack 
   const pushHistory = useCallback((items) => {
     const snap = JSON.stringify(items);
     setHistory(prev => {
@@ -774,7 +758,7 @@ const CustomerWorkspace = () => {
     });
   };
 
-  // ── load room template ─────────────────────────────────────────────────────
+  // ── load room template 
   useEffect(() => {
     if (!roomId) return;
     getPublishedRoom(roomId).then(res => {
@@ -787,11 +771,9 @@ const CustomerWorkspace = () => {
     }).catch(console.error);
   }, [roomId]);
 
-  // ── load existing design (from My Saved Designs or Published Designs) ────────
   useEffect(() => {
     if (!savedId) return;
     
-    // Try loading as customer's own design first
     getMyDesignById(savedId)
       .then(res => {
         const d = res.data;
@@ -801,13 +783,11 @@ const CustomerWorkspace = () => {
         setDesignName(d.name || 'My Design');
       })
       .catch(() => {
-        // If not found, try loading as a published design (template)
         getPublishedDesign(savedId)
           .then(res => {
             const d = res.data;
             setRoom(d.room || null);
             setPlacedItems(d.placedItems || []);
-            // Don't set designId - treat this as a new design based on template
             setDesignId(null);
             setDesignName(d.name ? `${d.name} (Copy)` : 'My Design');
           })
@@ -815,7 +795,7 @@ const CustomerWorkspace = () => {
       });
   }, [savedId]);
 
-  // ── furniture catalog ──────────────────────────────────────────────────────
+  // ── furniture catalog 
   useEffect(() => {
     listPublishedFurniture({ limit: 200 }).then(res => {
       const items = res.data || [];
@@ -824,10 +804,10 @@ const CustomerWorkspace = () => {
     }).catch(console.error);
   }, []);
 
-  // ── collision detection ────────────────────────────────────────────────────
+  // ── collision detection 
   useEffect(() => { setCollisions(checkCollisions(placedItems, room)); }, [placedItems, room]);
 
-  // ── furniture actions ──────────────────────────────────────────────────────
+  // ── furniture actions 
   const handleAddFurniture = (fi) => {
     if (!room) return;
     const bW = fi.dimensions?.width  || fi.width  || 1;
@@ -883,7 +863,7 @@ const CustomerWorkspace = () => {
 
   const handleUpdateRoom = (patch) => setRoom(prev => ({ ...prev, ...patch }));
 
-  // ── save ───────────────────────────────────────────────────────────────────
+  // ── save 
   const handleSaveConfirm = async (name) => {
     try {
       setIsSaving(true);
@@ -907,7 +887,7 @@ const CustomerWorkspace = () => {
     } finally { setIsSaving(false); }
   };
 
-  // ── tour helpers ───────────────────────────────────────────────────────────
+  // ── tour helpers 
   const openTour  = () => { setTourStep(0); setShowTour(true); };
   const advanceTour = () => {
     if (tourStep < TOUR.length - 1) { setTourStep(s => s + 1); }
@@ -921,22 +901,21 @@ const CustomerWorkspace = () => {
   const H = room?.dimensions?.height || 2.8;
   const camPos = [W, H * 1.3, L];
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="cw-root">
 
-      {/* ── Onboarding tour overlay (triggered by help button) ──────────────── */}
+      {/* ── Onboarding tour overlay (triggered by help button)  */}
       {showTour && (
         <TourBubble step={TOUR[tourStep]} index={tourStep}
           total={TOUR.length} onNext={advanceTour} onSkip={skipTour}/>
       )}
 
-      {/* ── Floating help button ───────────────────────────────────────────── */}
+      {/* ── Floating help button  */}
       <button className="cw-help-btn" onClick={openTour} title="How to use this workspace">
         <HelpIcon/>
       </button>
 
-      {/* ── TOP BAR ───────────────────────────────────────────────────────── */}
+      {/* ── TOP BAR  */}
       <div className="cw-topbar">
         {/* Left: room info */}
         <div className="cw-topbar-left">
@@ -986,10 +965,10 @@ const CustomerWorkspace = () => {
         </div>
       </div>
 
-      {/* ── BODY ──────────────────────────────────────────────────────────── */}
+      {/* ── BODY  */}
       <div className="cw-body">
 
-        {/* ── Left: Furniture catalog ──────────────────────────────────────── */}
+        {/* ── Left: Furniture catalog  */}
         <div className="cw-left-panel">
           <div className="cw-left-header">
             <span className="cw-left-title">Furniture</span>
@@ -1025,7 +1004,7 @@ const CustomerWorkspace = () => {
           </div>
         </div>
 
-        {/* ── Canvas ───────────────────────────────────────────────────────── */}
+        {/* ── Canvas  */}
         <div className="cw-canvas-area">
           {viewMode === '2D' && (
             <div className="cw-zoom-controls">
@@ -1077,7 +1056,7 @@ const CustomerWorkspace = () => {
           </div>
         </div>
 
-        {/* ── Right: Properties panel ───────────────────────────────────────── */}
+        {/* ── Right: Properties panel  */}
         <div className="cw-right-panel">
           <div className="cw-panel-header">
             <span className="cw-panel-title">Properties</span>
@@ -1094,8 +1073,6 @@ const CustomerWorkspace = () => {
                     onRemove={handleRemoveItem}
                     onRotate={handleRotateItem}
                     onAddToCart={(item) => {
-                      // item here is a placedItem with furniture details
-                      // Convert it to the format expected by addToCart
                       const furnitureData = {
                         _id: item.furnitureId || item._id,
                         name: item.name,
@@ -1115,7 +1092,7 @@ const CustomerWorkspace = () => {
         </div>
       </div>
 
-      {/* ── Save modal ────────────────────────────────────────────────────── */}
+      {/* ── Save modal  */}
       {showSave && (
         <SaveModal
           defaultName={designName}

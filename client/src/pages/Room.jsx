@@ -1,10 +1,9 @@
-// client/src/pages/Room.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { listPublishedRooms, resolveAssetUrl } from '../services/customerApi';
 import '../styles/Room.css';
 
-// ── Fallback SVG per shape ─────────────────────────────────────────────────────
+// ── Fallback SVG per shape 
 const ShapeSvg = ({ shape }) => {
   if (shape === 'L-Shape') {
     return (
@@ -51,7 +50,7 @@ const ColorStrip = ({ wallColors, floorColors }) => {
   );
 };
 
-// ── Loading skeleton ───────────────────────────────────────────────────────────
+// ── Loading skeleton 
 const Skeleton = () => (
   <div className="room-grid">
     {[1,2,3,4,5,6].map(i => (
@@ -64,7 +63,7 @@ const Skeleton = () => (
   </div>
 );
 
-// ── Main component ─────────────────────────────────────────────────────────────
+// ── Main component 
 const Room = () => {
   const navigate = useNavigate();
   const [rooms,   setRooms]   = useState([]);

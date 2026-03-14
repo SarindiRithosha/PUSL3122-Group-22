@@ -41,26 +41,23 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ── Health ────────────────────────────────────────────────────────────────────
+// ── Health 
 app.get("/api/health", (_req, res) =>
   res.json({ success: true, message: "Furniture backend is running.", timestamp: new Date().toISOString() })
 );
 
-// ── Auth (admin + customer JWT) ────────────────────────────────────────────────
+// ── Auth (admin + customer JWT) 
 app.use("/api/auth", authRoutes);
 
-// ── Admin-only ────────────────────────────────────────────────────────────────
+// ── Admin-only 
 app.use("/api/furniture", authenticateAdmin, furnitureRoutes);
 app.use("/api/rooms",     authenticateAdmin, roomTemplateRoutes);
 app.use("/api/uploads",   authenticateAdmin, uploadRoutes);
 app.use("/api/designs",   authenticateAdmin, designRoutes);
 app.use("/api/analytics", authenticateAdmin, analyticsRoutes);
-// Order routes: POST / is public (guest checkout), GET / and PATCH /:id are admin-only.
-// The router itself handles the split — admin middleware is applied here for the whole
-// router, but createOrder explicitly allows guest via optional customerId.
 app.use("/api/orders",    authenticateAdmin, orderRoutes);
 
-// ── Public read-only endpoints (no auth) ──────────────────────────────────────
+// ── Public read-only endpoints (no auth) 
 app.get("/api/public/rooms", async (req, res, next) => {
   try {
     const RoomTemplate = require("./models/RoomTemplate");
@@ -89,7 +86,7 @@ app.get("/api/public/furniture", async (req, res, next) => {
     let query = Furniture.find(filter).limit(Number(limit));
     if (sort === "price_asc")       query = query.sort({ price:  1 });
     else if (sort === "price_desc") query = query.sort({ price: -1 });
-    else                            query = query.sort({ createdAt: -1 }); // default: newest
+    else                            query = query.sort({ createdAt: -1 }); 
     const items = await query.lean();
     res.json({ success: true, data: items });
   } catch (err) { next(err); }
@@ -128,16 +125,14 @@ app.get("/api/public/designs/:id", async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// ── Public order creation (guest checkout — no auth required) ─────────────────
-// Must be declared BEFORE the admin orderRoutes mount so it isn't blocked.
 const orderController = require("./controllers/orderController");
 app.post("/api/public/orders", orderController.createOrder);
 
-// ── Customer-authenticated ────────────────────────────────────────────────────
+// ── Customer-authenticated 
 app.use("/api/customer/designs", authenticateCustomer, customerDesignRoutes);
 app.get("/api/customer/orders",  authenticateCustomer, orderController.getCustomerOrders);
 
-// ── 404 + global error ────────────────────────────────────────────────────────
+// ── 404 + global error 
 app.use((req, res) =>
   res.status(404).json({ success: false, message: "Route not found." })
 );

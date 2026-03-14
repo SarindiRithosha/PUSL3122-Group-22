@@ -43,12 +43,12 @@ const orderSchema = new mongoose.Schema(
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CustomerUser",
-      default: null, // Allow guest orders
+      default: null, 
     },
     designId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CustomerDesign",
-      default: null, // Optional design reference
+      default: null, 
     },
     orderNumber: {
       type: String,

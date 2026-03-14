@@ -3,9 +3,7 @@ const Design   = require("../models/Design");
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-// ---------------------------------------------------------------------------
 // Normalise & whitelist incoming payload fields
-// ---------------------------------------------------------------------------
 const normalizeDesignPayload = (payload = {}) => {
   const data = {};
 
@@ -39,10 +37,8 @@ const normalizeDesignPayload = (payload = {}) => {
   return data;
 };
 
-// ---------------------------------------------------------------------------
 // GET /api/designs
 // Query params: search, status, isFinalized, clientName, page, limit, sortBy, order
-// ---------------------------------------------------------------------------
 const listDesigns = async (req, res, next) => {
   try {
     const {
@@ -101,9 +97,7 @@ const listDesigns = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ---------------------------------------------------------------------------
 // GET /api/designs/:id
-// ---------------------------------------------------------------------------
 const getDesignById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -118,9 +112,7 @@ const getDesignById = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ---------------------------------------------------------------------------
 // POST /api/designs
-// ---------------------------------------------------------------------------
 const createDesign = async (req, res, next) => {
   try {
     const payload = normalizeDesignPayload(req.body || {});
@@ -130,9 +122,7 @@ const createDesign = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ---------------------------------------------------------------------------
 // PUT /api/designs/:id  — full update (workspace save / edit save)
-// ---------------------------------------------------------------------------
 const updateDesign = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -151,9 +141,7 @@ const updateDesign = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ---------------------------------------------------------------------------
 // PATCH /api/designs/:id/publish
-// ---------------------------------------------------------------------------
 const publishDesign = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -172,9 +160,7 @@ const publishDesign = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ---------------------------------------------------------------------------
 // DELETE /api/designs/:id  — permanent hard delete
-// ---------------------------------------------------------------------------
 const deleteDesign = async (req, res, next) => {
   try {
     const { id } = req.params;

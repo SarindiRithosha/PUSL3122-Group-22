@@ -1,4 +1,3 @@
-// client/src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import CustomerHeader from './components/CustomerHeader';
@@ -72,8 +71,6 @@ function App() {
           <Route path="/contact"   element={<CustomerLayout><Contactus/></CustomerLayout>} />
           <Route path="/cart"      element={<CustomerLayout><Cart/></CustomerLayout>} />
           <Route path="/checkout"  element={<CustomerLayout><Checkout/></CustomerLayout>} />
-
-          {/*  Room browser → workspace (fullscreen, no footer)  */}
           <Route path="/room" element={<CustomerLayout><Room/></CustomerLayout>} />
 
           <Route path="/workspace/room/:roomId"

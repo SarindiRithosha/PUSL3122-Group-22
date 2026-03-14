@@ -19,7 +19,6 @@ const splitName = (fullName = "") => {
   return { firstName, lastName:rest.join(" ") };
 };
 
-// ── localStorage wishlist helpers (shared with catalog pages) ─────────────────
 const FUR_WL_KEY = "furniplan_wishlist_furniture";
 const DES_WL_KEY = "furniplan_wishlist_designs";
 const loadWL = (key) => { try { return Object.values(JSON.parse(localStorage.getItem(key) || "{}")); } catch { return []; } };
@@ -111,7 +110,7 @@ const SavedDesignCard = ({ design, onOpen, onDelete }) => {
   );
 };
 
-// ── Delete design confirm modal ───────────────────────────────────────────────
+// ── Delete design confirm modal 
 const DeleteDesignModal = ({ design, onConfirm, onClose }) => (
   <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
     <div className="modal-content">
@@ -134,7 +133,7 @@ const DeleteDesignModal = ({ design, onConfirm, onClose }) => (
   </div>
 );
 
-// ── Main component ─────────────────────────────────────────────────────────────
+// ── Main component 
 const Myaccount = () => {
   const navigate = useNavigate();
   const {
@@ -156,11 +155,9 @@ const Myaccount = () => {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [ordersError,   setOrdersError]   = useState("");
 
-  // Favorites — read from localStorage (written by catalog pages)
   const [favFurniture, setFavFurniture] = useState(() => loadWL(FUR_WL_KEY));
   const [favDesigns,   setFavDesigns]   = useState(() => loadWL(DES_WL_KEY));
 
-  // Sync favorites when the favorites tab is opened
   useEffect(() => {
     if (activeTab !== "favorites") return;
     setFavFurniture(loadWL(FUR_WL_KEY));
@@ -302,7 +299,7 @@ const Myaccount = () => {
     finally { setIsDeletingAccount(false); }
   };
 
-  // ── Render tabs ──────────────────────────────────────────────────────────────
+  // ── Render tabs 
   const renderProfileTab = () => (
     <>
       <div className="section personal-information">

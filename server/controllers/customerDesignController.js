@@ -1,4 +1,3 @@
-// server/controllers/customerDesignController.js
 const CustomerDesign = require("../models/CustomerDesign");
 
 // GET /api/customer/designs

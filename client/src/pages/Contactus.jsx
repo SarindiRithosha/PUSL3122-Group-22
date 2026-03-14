@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-// icons for contact information
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
-// import '../services/...' // placeholder removed; add actual service when available
 import '../styles/Contactus.css';
 
 const Contactus = () => {

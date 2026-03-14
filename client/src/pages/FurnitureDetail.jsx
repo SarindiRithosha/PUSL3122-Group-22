@@ -1,9 +1,3 @@
-// client/src/pages/FurnitureDetail.jsx
-// Main display: 3D model viewer (default) with OrbitControls for rotation
-// Toggle button switches between 3D and 2D image view
-// Selecting a color re-tints the 3D model in real time
-// Uses the same GLTFLoader + material pattern as CustomerWorkspace
-
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
@@ -15,7 +9,7 @@ import { listPublishedFurniture, resolveAssetUrl } from '../services/customerApi
 import { useCart } from '../contexts/CartContext';
 import '../styles/FurnitureDetail.css';
 
-// ── Icon helpers ──────────────────────────────────────────────────────────────
+// ── Icon helpers 
 const ArrowLeftIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path d="M19 12H5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -52,7 +46,7 @@ const RotateIcon = () => (
   </svg>
 );
 
-// ── Fallback sofa SVG ─────────────────────────────────────────────────────────
+// ── Fallback sofa SVG 
 const SofaPlaceholder = () => (
   <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
     height:'100%', color:'#C8B89A', gap:'12px' }}>
@@ -66,7 +60,6 @@ const SofaPlaceholder = () => (
   </div>
 );
 
-// ── Apply tint color to a cloned GLTF material ────────────────────────────────
 const applyTint = (obj, hexColor) => {
   if (!obj) return;
   obj.traverse(n => {
@@ -82,7 +75,7 @@ const applyTint = (obj, hexColor) => {
   });
 };
 
-// ── 3D model scene component ─────────────────────────────────────────────────
+// ── 3D model scene component 
 const FurnitureScene = ({ modelUrl, tintColor }) => {
   const [scene, setScene] = useState(null);
   const baseRef = useRef(null);
@@ -123,7 +116,7 @@ const FurnitureScene = ({ modelUrl, tintColor }) => {
   return <primitive object={scene}/>;
 };
 
-// ── Main component ────────────────────────────────────────────────────────────
+// ── Main component 
 const FurnitureDetail = () => {
   const navigate      = useNavigate();
   const { id }        = useParams();
@@ -132,7 +125,7 @@ const FurnitureDetail = () => {
   const [furniture,     setFurniture]     = useState(null);
   const [loading,       setLoading]       = useState(true);
   const [quantity,      setQuantity]      = useState(1);
-  const [selectedColor, setSelectedColor] = useState(0);   // index into furniture.colors
+  const [selectedColor, setSelectedColor] = useState(0);   
   const [viewMode,      setViewMode]      = useState('3D'); // '3D' | '2D'
 
   // Fetch by ID via public endpoint

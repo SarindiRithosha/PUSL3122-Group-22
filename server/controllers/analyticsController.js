@@ -2,9 +2,7 @@ const Order = require("../models/Order");
 const CustomerDesign = require("../models/CustomerDesign");
 const Furniture = require("../models/Furniture");
 
-/**
- * Calculate date range based on filter
- */
+/* Calculate date range based on filter */
 const getDateRange = (filter) => {
   const now = new Date();
   let startDate = new Date();
@@ -29,9 +27,7 @@ const getDateRange = (filter) => {
   return { startDate, endDate: now };
 };
 
-/**
- * Calculate previous period date range for comparison
- */
+/**Calculate previous period date range for comparison*/
 const getPreviousPeriodRange = (startDate, endDate) => {
   const duration = endDate - startDate;
   const prevEndDate = new Date(startDate);
@@ -49,7 +45,6 @@ exports.getDashboardAnalytics = async (req, res) => {
     const { startDate, endDate } = getDateRange(timeFilter);
     const prevPeriod = getPreviousPeriodRange(startDate, endDate);
 
-    // ===== TOTAL REVENUE =====
     const revenueResult = await Order.aggregate([
       {
         $match: {
@@ -86,7 +81,6 @@ exports.getDashboardAnalytics = async (req, res) => {
       ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100)
       : 0;
 
-    // ===== ACTIVE CONSULTATIONS (Customer Designs) =====
     const activeConsultations = await CustomerDesign.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });
@@ -97,7 +91,6 @@ exports.getDashboardAnalytics = async (req, res) => {
 
     const consultationsChange = activeConsultations - prevConsultations;
 
-    // ===== DESIGN TO ORDER RATE =====
     const totalOrders = await Order.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });

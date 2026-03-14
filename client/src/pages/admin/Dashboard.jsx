@@ -1,8 +1,3 @@
-// client/src/pages/admin/Dashboard.jsx
-// Fetches live counts + recent designs + recent orders from the backend.
-// "New Project"  → /admin/design-workspace
-// "View All"     → /admin/design-library
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/Dashboard.css';
@@ -12,7 +7,6 @@ import { listRoomTemplates }  from '../../services/roomApi';
 import { listDesigns }        from '../../services/designApi';
 import { getAllOrders }       from '../../services/orderApi';
 
-// ── Icon palette: cycle through 5 accent colours ─────────────────────────────
 const PALETTE = ['#DE8B47', '#43A047', '#7E57C2', '#EF5350', '#1E88E5'];
 const bgOf = (hex) => hex + '18';
 
@@ -26,7 +20,7 @@ const DesignIcon = ({ color }) => (
   </svg>
 );
 
-// ── Status badge for orders ───────────────────────────────────────────────────
+// ── Status badge for orders 
 const STATUS_COLORS = {
   Pending:    { bg:'#FFF3E0', text:'#E65100' },
   Processing: { bg:'#E3F2FD', text:'#1565C0' },
@@ -48,13 +42,13 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-// ── Main component ────────────────────────────────────────────────────────────
+// ── Main component 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const adminName = user?.name || user?.email || 'Admin';
 
-  // ── State ─────────────────────────────────────────────────────────────────
+  // ── State 
   const [stats, setStats] = useState({
     furnitureTotal: '—',
     roomTemplates:  '—',
@@ -64,7 +58,7 @@ const Dashboard = () => {
   const [recentOrders,  setRecentOrders]  = useState([]);
   const [loading,       setLoading]       = useState(true);
 
-  // ── Fetch data ─────────────────────────────────────────────────────────────
+  // ── Fetch data 
   useEffect(() => {
     if (!token) return;
 
@@ -104,7 +98,7 @@ const Dashboard = () => {
     load();
   }, [token]);
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  //  Render 
   return (
     <div className="dashboard-container">
       {/* Header */}

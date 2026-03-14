@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { listPublishedFurniture, listPublishedDesigns, resolveAssetUrl } from "../services/customerApi";
 import "../styles/Home.css";
 
-// ── Mini room thumbnail (SVG, no external images) ─────────────────────────────
 const RoomPreview = ({ floorColor, wallColor, shape }) => {
   const fc = floorColor || "#C8A882";
   const wc = wallColor  || "#8B7355";
@@ -27,7 +26,7 @@ const RoomPreview = ({ floorColor, wallColor, shape }) => {
   );
 };
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Component 
 const Home = () => {
   const [featuredDesigns,  setFeaturedDesigns]  = useState([]);
   const [popularFurniture, setPopularFurniture] = useState([]);
@@ -39,8 +38,8 @@ const Home = () => {
       try {
         setLoading(true);
         const [designsRes, furnitureRes] = await Promise.all([
-          listPublishedDesigns(),                              // /api/public/designs
-          listPublishedFurniture({ limit: 8, sort: "newest" }), // /api/public/furniture
+          listPublishedDesigns(),                              
+          listPublishedFurniture({ limit: 8, sort: "newest" }), 
         ]);
         if (cancelled) return;
         setFeaturedDesigns((designsRes.data  || []).slice(0, 6));
