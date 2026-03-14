@@ -78,6 +78,16 @@
   color: white;
 }
 
+.download-report-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.download-report-btn:disabled:hover {
+  background: white;
+  color: #DE8B47;
+}
+
 /* Metrics Grid */
 .metrics-grid {
   display: grid;
@@ -118,6 +128,11 @@
 .metric-change.positive {
   background: #e8f5e9;
   color: #2e7d32;
+}
+
+.metric-change.negative {
+  background: #ffebee;
+  color: #c62828;
 }
 
 .metric-value {

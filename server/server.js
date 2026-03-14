@@ -13,6 +13,8 @@ const roomTemplateRoutes   = require("./routes/roomTemplateRoutes");
 const uploadRoutes         = require("./routes/uploadRoutes");
 const designRoutes         = require("./routes/designRoutes");
 const customerDesignRoutes = require("./routes/customerDesignRoutes");
+const orderRoutes          = require("./routes/orderRoutes");
+const analyticsRoutes      = require("./routes/analyticsRoutes");
 
 const { authenticateAdmin, authenticateCustomer } = require("./middleware/authMiddleware");
 
@@ -52,11 +54,13 @@ app.use("/api/furniture", authenticateAdmin, furnitureRoutes);
 app.use("/api/rooms",     authenticateAdmin, roomTemplateRoutes);
 app.use("/api/uploads",   authenticateAdmin, uploadRoutes);
 app.use("/api/designs",   authenticateAdmin, designRoutes);
+app.use("/api/analytics", authenticateAdmin, analyticsRoutes);
+// Order routes: POST / is public (guest checkout), GET / and PATCH /:id are admin-only.
+// The router itself handles the split — admin middleware is applied here for the whole
+// router, but createOrder explicitly allows guest via optional customerId.
+app.use("/api/orders",    authenticateAdmin, orderRoutes);
 
 // ── Public read-only endpoints (no auth) ──────────────────────────────────────
-// Customers need to browse published room templates and the furniture catalog
-// without requiring an admin token.
-
 app.get("/api/public/rooms", async (req, res, next) => {
   try {
     const RoomTemplate = require("./models/RoomTemplate");
@@ -77,16 +81,61 @@ app.get("/api/public/rooms/:id", async (req, res, next) => {
 app.get("/api/public/furniture", async (req, res, next) => {
   try {
     const Furniture = require("./models/Furniture");
-    const { category, limit = 200 } = req.query;
-    const filter = {};
-    if (category) filter.category = category;
-    const items = await Furniture.find(filter).limit(Number(limit)).lean();
+    const { category, search, sort, limit = 200 } = req.query;
+    // ALWAYS filter by Published — draft items must never be visible to customers
+    const filter = { status: "Published" };
+    if (category && category !== "all") filter.category = category;
+    if (search) filter.name = { $regex: search, $options: "i" };
+    let query = Furniture.find(filter).limit(Number(limit));
+    if (sort === "price_asc")       query = query.sort({ price:  1 });
+    else if (sort === "price_desc") query = query.sort({ price: -1 });
+    else                            query = query.sort({ createdAt: -1 }); // default: newest
+    const items = await query.lean();
     res.json({ success: true, data: items });
   } catch (err) { next(err); }
 });
 
+app.get("/api/public/furniture/:id", async (req, res, next) => {
+  try {
+    const Furniture = require("./models/Furniture");
+    const item = await Furniture.findById(req.params.id).lean();
+    if (!item) return res.status(404).json({ success: false, message: "Furniture not found." });
+    res.json({ success: true, data: item });
+  } catch (err) { next(err); }
+});
+
+app.get("/api/public/designs", async (req, res, next) => {
+  try {
+    const Design = require("./models/Design");
+    const { style, roomType, limit = 100 } = req.query;
+    const filter = { status: "Published" };
+    if (style)    filter.designStyle = style;
+    if (roomType) filter.roomType    = roomType;
+    const designs = await Design.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .lean();
+    res.json({ success: true, data: designs });
+  } catch (err) { next(err); }
+});
+
+app.get("/api/public/designs/:id", async (req, res, next) => {
+  try {
+    const Design = require("./models/Design");
+    const design = await Design.findOne({ _id: req.params.id, status: "Published" }).lean();
+    if (!design) return res.status(404).json({ success: false, message: "Design not found." });
+    res.json({ success: true, data: design });
+  } catch (err) { next(err); }
+});
+
+// ── Public order creation (guest checkout — no auth required) ─────────────────
+// Must be declared BEFORE the admin orderRoutes mount so it isn't blocked.
+const orderController = require("./controllers/orderController");
+app.post("/api/public/orders", orderController.createOrder);
+
 // ── Customer-authenticated ────────────────────────────────────────────────────
 app.use("/api/customer/designs", authenticateCustomer, customerDesignRoutes);
+app.get("/api/customer/orders",  authenticateCustomer, orderController.getCustomerOrders);
 
 // ── 404 + global error ────────────────────────────────────────────────────────
 app.use((req, res) =>

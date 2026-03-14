@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { listPublishedFurniture, resolveAssetUrl } from '../services/customerApi';
+import { useCart } from '../contexts/CartContext';
 import '../styles/FurnitureDetail.css';
 
 // Generic SVGs for the UI
@@ -68,20 +70,42 @@ const ChairSVG = ({ width = "100%", height = "100%", isThumbnail = false }) => {
 
 const FurnitureDetail = () => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Using ID to mimic fetching data
+    const { id } = useParams();
+    const { addToCart } = useCart();
 
-    // Mock Data
-    const furnitureData = {
-        name: "Nordic Oak Chair",
-        description: "Bring calm, contemporary character to your space with this Nordic Oak Chair. Crafted from solid oak and finished in a soft natural tone, its clean lines and gently curved profile reflect timeless Scandinavian design.",
-        dimensions: "55 × 54 × 64",
-        material: "Wood",
-        price: "LKR 23,000",
-        colors: ["#cba072", "#a65c40", "#ffffff", "#6b513d", "#faebd8"],
-    };
-
+    const [furniture, setFurniture] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [selectedColor, setSelectedColor] = useState(0);
+
+    useEffect(() => {
+        const fetchFurniture = async () => {
+            try {
+                setLoading(true);
+                const response = await listPublishedFurniture();
+                const item = response.data.find(f => f._id === id);
+                
+                if (item) {
+                    setFurniture(item);
+                    // Set first color as selected if available
+                    if (item.colors && item.colors.length > 0) {
+                        setSelectedColor(0);
+                    }
+                } else {
+                    setFurniture(null);
+                }
+            } catch (error) {
+                console.error('Error fetching furniture:', error);
+                setFurniture(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchFurniture();
+        }
+    }, [id]);
 
     const handleDecrease = () => {
         if (quantity > 1) setQuantity(quantity - 1);
@@ -90,6 +114,36 @@ const FurnitureDetail = () => {
     const handleIncrease = () => {
         setQuantity(quantity + 1);
     };
+
+    if (loading) {
+        return (
+            <div className="cd-page-container">
+                <div className="cd-inner-wrapper" style={{ textAlign: 'center', padding: '3rem' }}>
+                    <p>Loading furniture details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!furniture) {
+        return (
+            <div className="cd-page-container">
+                <div className="cd-inner-wrapper" style={{ textAlign: 'center', padding: '3rem' }}>
+                    <p>Furniture not found</p>
+                    <button className="cd-btn-primary" onClick={() => navigate('/furniture')} style={{ marginTop: '1rem' }}>
+                        Back to Catalog
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    const dimensions = furniture.dimensions 
+        ? `${furniture.dimensions.width} × ${furniture.dimensions.depth} × ${furniture.dimensions.height}` 
+        : 'N/A';
+    const material = furniture.material || 'N/A';
+    const colors = furniture.colors || [];
+    const imageUrl = furniture.image2DUrl ? resolveAssetUrl(furniture.image2DUrl) : null;
 
     return (
         <div className="cd-page-container">
@@ -108,52 +162,73 @@ const FurnitureDetail = () => {
                     {/* LEFT: Image Gallery View */}
                     <div className="cd-gallery-section">
                         <div className="cd-main-image-box">
-                            <ChairSVG />
+                            {imageUrl ? (
+                                <img 
+                                    src={imageUrl} 
+                                    alt={furniture.name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 72px;">🪑</div>';
+                                    }}
+                                />
+                            ) : (
+                                <ChairSVG />
+                            )}
                         </div>
                         <div className="cd-thumbnail-row">
-                            <div className="cd-thumbnail active"><ChairSVG isThumbnail={true} /></div>
-                            <div className="cd-thumbnail"><ChairSVG isThumbnail={true} /></div>
-                            <div className="cd-thumbnail"><ChairSVG isThumbnail={true} /></div>
-                            <div className="cd-thumbnail"><ChairSVG isThumbnail={true} /></div>
+                            <div className="cd-thumbnail active">
+                                {imageUrl ? (
+                                    <img 
+                                        src={imageUrl} 
+                                        alt={`${furniture.name} thumbnail`}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    <ChairSVG isThumbnail={true} />
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* RIGHT: Product Details */}
                     <div className="cd-details-section">
-                        <h1 className="cd-title">{furnitureData.name}</h1>
-                        <p className="cd-description">{furnitureData.description}</p>
+                        <h1 className="cd-title">{furniture.name}</h1>
+                        <p className="cd-description">{furniture.description || 'No description available.'}</p>
 
                         {/* Spec Boxes */}
                         <div className="cd-specs-row">
                             <div className="cd-spec-box">
                                 <span className="cd-spec-label">Dimensions</span>
-                                <span className="cd-spec-value">{furnitureData.dimensions}</span>
+                                <span className="cd-spec-value">{dimensions}</span>
                             </div>
                             <div className="cd-spec-box">
                                 <span className="cd-spec-label">Material</span>
-                                <span className="cd-spec-value">{furnitureData.material}</span>
+                                <span className="cd-spec-value">{material}</span>
                             </div>
                             <div className="cd-spec-box">
                                 <span className="cd-spec-label">Price</span>
-                                <span className="cd-spec-value">{furnitureData.price}</span>
+                                <span className="cd-spec-value">LKR {furniture.price.toLocaleString()}</span>
                             </div>
                         </div>
 
                         {/* Colors */}
-                        <div className="cd-color-section">
-                            <span className="cd-section-label">Available Colors</span>
-                            <div className="cd-color-options">
-                                {furnitureData.colors.map((color, idx) => (
-                                    <button
-                                        key={idx}
-                                        className={`cd-color-swatch ${selectedColor === idx ? 'active' : ''}`}
-                                        style={{ backgroundColor: color }}
-                                        onClick={() => setSelectedColor(idx)}
-                                        aria-label={`Select Color ${idx}`}
-                                    />
-                                ))}
+                        {colors.length > 0 && (
+                            <div className="cd-color-section">
+                                <span className="cd-section-label">Available Colors</span>
+                                <div className="cd-color-options">
+                                    {colors.map((color, idx) => (
+                                        <button
+                                            key={idx}
+                                            className={`cd-color-swatch ${selectedColor === idx ? 'active' : ''}`}
+                                            style={{ backgroundColor: color }}
+                                            onClick={() => setSelectedColor(idx)}
+                                            aria-label={`Select Color ${idx}`}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Quantity */}
                         <div className="cd-quantity-picker">
@@ -165,27 +240,13 @@ const FurnitureDetail = () => {
                         {/* Actions */}
                         <div className="cd-action-buttons">
                             <button className="cd-btn-primary" onClick={() => {
-                                // push current furniture to localStorage cart with quantity
-                                const item = {
-                                  id: id,
-                                  name: furnitureData.name,
-                                  price: parseInt(furnitureData.price.replace(/[^0-9]/g, ''), 10),
-                                  image: '',
-                                };
-                                const existing = JSON.parse(localStorage.getItem('cart') || '[]');
-                                const idx = existing.findIndex(i => i.id === item.id);
-                                if (idx > -1) {
-                                  existing[idx].quantity += quantity;
-                                } else {
-                                  existing.push({ ...item, quantity });
-                                }
-                                localStorage.setItem('cart', JSON.stringify(existing));
-                                alert('Added to cart');
+                                // Add to cart using context
+                                addToCart(furniture, quantity, colors[selectedColor] || null);
                             }}>
                                 <CartIcon />
                                 Add to Cart
                             </button>
-                            <button className="cd-btn-secondary">
+                            <button className="cd-btn-secondary" onClick={() => navigate('/room')}>
                                 <CubeIcon />
                                 View in Room
                             </button>

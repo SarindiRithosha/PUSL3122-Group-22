@@ -15,7 +15,9 @@ import {
   createMyDesign,
   updateMyDesign,
   getMyDesignById,
+  getPublishedDesign,
 } from '../services/customerApi';
+import { useCart } from '../contexts/CartContext';
 import '../styles/CustomerWorkspace.css';
 
 // ─── SVG Icon helpers ─────────────────────────────────────────────────────────
@@ -709,6 +711,7 @@ const SaveModal = ({ defaultName, itemCount, onConfirm, onClose, isSaving }) => 
 // ─────────────────────────────────────────────────────────────────────────────
 const CustomerWorkspace = () => {
   const navigate  = useNavigate();
+  const { addToCart } = useCart();
   // roomId  → coming fresh from Room page (first visit)
   // designId → coming from My Saved Designs (reload existing)
   const { roomId, designId: savedId } = useParams();
@@ -784,16 +787,32 @@ const CustomerWorkspace = () => {
     }).catch(console.error);
   }, [roomId]);
 
-  // ── load existing design (from My Saved Designs) ───────────────────────────
+  // ── load existing design (from My Saved Designs or Published Designs) ────────
   useEffect(() => {
     if (!savedId) return;
-    getMyDesignById(savedId).then(res => {
-      const d = res.data;
-      setRoom(d.room || null);
-      setPlacedItems(d.placedItems || []);
-      setDesignId(d._id);
-      setDesignName(d.name || 'My Design');
-    }).catch(console.error);
+    
+    // Try loading as customer's own design first
+    getMyDesignById(savedId)
+      .then(res => {
+        const d = res.data;
+        setRoom(d.room || null);
+        setPlacedItems(d.placedItems || []);
+        setDesignId(d._id);
+        setDesignName(d.name || 'My Design');
+      })
+      .catch(() => {
+        // If not found, try loading as a published design (template)
+        getPublishedDesign(savedId)
+          .then(res => {
+            const d = res.data;
+            setRoom(d.room || null);
+            setPlacedItems(d.placedItems || []);
+            // Don't set designId - treat this as a new design based on template
+            setDesignId(null);
+            setDesignName(d.name ? `${d.name} (Copy)` : 'My Design');
+          })
+          .catch(console.error);
+      });
   }, [savedId]);
 
   // ── furniture catalog ──────────────────────────────────────────────────────
@@ -1075,12 +1094,16 @@ const CustomerWorkspace = () => {
                     onRemove={handleRemoveItem}
                     onRotate={handleRotateItem}
                     onAddToCart={(item) => {
-
-                      const cart = JSON.parse(sessionStorage.getItem('cw_cart') || '[]');
-                      const existing = cart.find(c => c._id === item._id);
-                      if (existing) { existing.quantity = (existing.quantity || 1) + 1; }
-                      else { cart.push({ ...item, quantity: 1 }); }
-                      sessionStorage.setItem('cw_cart', JSON.stringify(cart));
+                      // item here is a placedItem with furniture details
+                      // Convert it to the format expected by addToCart
+                      const furnitureData = {
+                        _id: item.furnitureId || item._id,
+                        name: item.name,
+                        price: item.price || 0,
+                        image2DUrl: item.image2DUrl,
+                        category: item.category,
+                      };
+                      addToCart(furnitureData, 1, null);
                     }}
                   />
                 : room

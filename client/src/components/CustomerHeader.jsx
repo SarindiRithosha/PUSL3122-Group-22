@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiShoppingCart, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useCustomerAuth } from '../contexts/CustomerAuthContext';
+import { useCart } from '../contexts/CartContext';
 import Cart from '../pages/Cart';
 import '../styles/CustomerHeader.css';
 
@@ -10,14 +11,9 @@ const CustomerHeader = () => {
   const [isDropdownOpen,  setIsDropdownOpen]  = useState(false);
   const [isGuestPopupOpen,setIsGuestPopupOpen]= useState(false);
   const [isCartOpen,      setIsCartOpen]      = useState(false);
-  const [cartItems,       setCartItems]       = useState([
-    { id:1, name:"Nordic Oak Chair",        price:32000, quantity:2, image:"", category:"Chair"   },
-    { id:2, name:"Minimalist Wooden Table", price:45000, quantity:1, image:"", category:"Table"   },
-    { id:3, name:"Scandinavian Sofa",       price:85000, quantity:1, image:"", category:"Sofa"    },
-    { id:4, name:"Industrial Bookshelf",    price:28000, quantity:3, image:"", category:"Storage" },
-  ]);
 
   const { customer, isCustomerLoggedIn, logoutCustomer } = useCustomerAuth();
+  const { cartItems, incrementItem, decrementItem, removeItem, getCartCount } = useCart();
   const navigate  = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -31,13 +27,6 @@ const CustomerHeader = () => {
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
-
-  const incrementItem = (id) =>
-    setCartItems(items => items.map(i => i.id===id ? {...i, quantity:i.quantity+1} : i));
-  const decrementItem = (id) =>
-    setCartItems(items => items.map(i => i.id===id ? {...i, quantity:Math.max(1,i.quantity-1)} : i));
-  const removeItem = (id) =>
-    setCartItems(items => items.filter(i => i.id!==id));
 
   const handleLogout = () => {
     setIsDropdownOpen(false);
@@ -82,8 +71,8 @@ const CustomerHeader = () => {
           {/* Cart */}
           <button className="cart-icon" onClick={() => setIsCartOpen(true)}>
             <FiShoppingCart size={22} strokeWidth={1.8}/>
-            {cartItems.length > 0 && (
-              <span className="cart-count">{cartItems.length}</span>
+            {getCartCount() > 0 && (
+              <span className="cart-count">{getCartCount()}</span>
             )}
           </button>
 
@@ -161,10 +150,6 @@ const CustomerHeader = () => {
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onIncrement={incrementItem}
-        onDecrement={decrementItem}
-        onRemove={removeItem}
       />
     </header>
   );

@@ -49,6 +49,12 @@ export const listPublishedFurniture = (params = {}) => {
   return request(`/public/furniture${qs ? "?" + qs : ""}`);
 };
 
+export const listPublishedDesigns = () =>
+  request("/public/designs");
+
+export const getPublishedDesign = (id) =>
+  request(`/public/designs/${id}`);
+
 // ── Customer authenticated ────────────────────────────────────────────────────
 export const listMyDesigns   = ()            => request("/customer/designs");
 export const getMyDesignById = (id)          => request(`/customer/designs/${id}`);

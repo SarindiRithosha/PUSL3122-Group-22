@@ -1,15 +1,15 @@
 import React from 'react';
 import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
+import { resolveAssetUrl } from '../services/customerApi';
 import '../styles/Cart.css';
 
-const Cart = ({ isOpen, onClose, cartItems, onIncrement, onDecrement, onRemove }) => {
+const Cart = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const { cartItems, incrementItem, decrementItem, removeItem, getCartTotal } = useCart();
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = getCartTotal();
 
   const handleCheckout = () => {
     onClose(); // Close the drawer
@@ -42,21 +42,35 @@ const Cart = ({ isOpen, onClose, cartItems, onIncrement, onDecrement, onRemove }
             </div>
           ) : (
             cartItems.map(item => (
-              <div className="drawer-cart-item" key={item.id}>
+              <div className="drawer-cart-item" key={`${item.id}-${item.selectedColor || 'default'}`}>
                 <div className="item-image">
-                  {item.image ? (
-                    <img src={item.image} alt={item.name} />
+                  {item.image2DUrl ? (
+                    <img src={resolveAssetUrl(item.image2DUrl)} alt={item.name} />
                   ) : (
                     <div className="image-placeholder">📦</div>
                   )}
                 </div>
                 <div className="item-details">
                   <h4>{item.name}</h4>
+                  {item.selectedColor && (
+                    <p className="item-color" style={{ fontSize: '0.85rem', color: '#666' }}>
+                      Color: <span style={{ 
+                        display: 'inline-block', 
+                        width: '12px', 
+                        height: '12px', 
+                        backgroundColor: item.selectedColor, 
+                        border: '1px solid #ddd',
+                        borderRadius: '2px',
+                        verticalAlign: 'middle',
+                        marginLeft: '4px'
+                      }}></span>
+                    </p>
+                  )}
                   <p className="item-price">LKR {item.price.toLocaleString()}</p>
                   <div className="item-quantity">
                     <button 
                       className="qty-btn"
-                      onClick={() => onDecrement(item.id)}
+                      onClick={() => decrementItem(item.id, item.selectedColor)}
                       disabled={item.quantity <= 1}
                     >
                       <FaMinus />
@@ -64,7 +78,7 @@ const Cart = ({ isOpen, onClose, cartItems, onIncrement, onDecrement, onRemove }
                     <span>{item.quantity}</span>
                     <button 
                       className="qty-btn"
-                      onClick={() => onIncrement(item.id)}
+                      onClick={() => incrementItem(item.id, item.selectedColor)}
                     >
                       <FaPlus />
                     </button>
@@ -74,7 +88,7 @@ const Cart = ({ isOpen, onClose, cartItems, onIncrement, onDecrement, onRemove }
                   <p>LKR {(item.price * item.quantity).toLocaleString()}</p>
                   <button 
                     className="remove-btn"
-                    onClick={() => onRemove(item.id)}
+                    onClick={() => removeItem(item.id, item.selectedColor)}
                     aria-label="Remove item"
                   >
                     <FaTrash />
