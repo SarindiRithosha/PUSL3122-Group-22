@@ -34,7 +34,7 @@ const createUploader = (type) =>
       },
     }),
     limits: {
-      fileSize: 25 * 1024 * 1024,
+      fileSize: 70 * 1024 * 1024,
     },
     fileFilter: (req, file, cb) => {
       const isValid =

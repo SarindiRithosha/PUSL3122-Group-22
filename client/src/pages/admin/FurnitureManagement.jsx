@@ -297,7 +297,7 @@ const FurnitureManagement = () => {
                     type="button"
                     className="fm-action-btn icon view"
                     title="View Details"
-                    onClick={() => navigate(`/furniture/${item._id}`)}
+                    onClick={() => navigate(`/furniture/${item._id}?from=admin`)}
                   >
                     <EyeIcon />
                   </button>

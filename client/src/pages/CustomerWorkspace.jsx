@@ -7,6 +7,7 @@ import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { ACESFilmicToneMapping } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader }  from 'three/examples/jsm/loaders/OBJLoader.js';
 import {
   getPublishedRoom,
   listPublishedFurniture,
@@ -77,7 +78,7 @@ const checkCollisions = (items, room) => {
   return hit;
 };
 
-// 2D SVG CANVAS
+// 2D SVG CANVAS — unchanged
 const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onCanvasClick, zoom, collisions }) => {
   const svgRef     = useRef(null);
   const [dragging, setDragging] = useState(null);
@@ -95,7 +96,6 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
     if (!svgRef.current) return;
     const rect  = svgRef.current.getBoundingClientRect();
     const scale = zoom / 100;
-
     if (rotating) {
       const item = placedItems.find(i => i.id === rotating);
       if (!item) return;
@@ -142,22 +142,16 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
             <polygon points={pts.map(p => `${p[0]+pad},${p[1]+pad}`).join(' ')}/>
           </clipPath>
         </defs>
-
-        {/* Background + floor */}
         <rect width={svgW} height={svgH} fill="#EDEEF1" className="cw-grid-bg"/>
         <polygon points={pts.map(p => `${p[0]+pad},${p[1]+pad}`).join(' ')} fill={floorColor||'#F5F0E8'}/>
         <rect x={pad} y={pad} width={rWpx} height={rLpx} fill="url(#cw-grid)" clipPath="url(#cw-clip)"/>
-        {/* Walls */}
         <polygon points={pts.map(p => `${p[0]+pad},${p[1]+pad}`).join(' ')}
           fill="none" stroke={wallColor||'#8B7355'} strokeWidth="5"/>
-        {/* Dimension labels */}
         <text x={pad+rWpx/2} y={pad-12} textAnchor="middle" fontSize="11"
           fill="#64748B" fontFamily="monospace" fontWeight="600">{wM.toFixed(1)}m</text>
         <text x={pad-14} y={pad+rLpx/2} textAnchor="middle" fontSize="11"
           fill="#64748B" fontFamily="monospace" fontWeight="600"
           transform={`rotate(-90,${pad-14},${pad+rLpx/2})`}>{lM.toFixed(1)}m</text>
-
-        {/* Furniture items */}
         {placedItems.map(item => {
           const isSel  = item.id === selectedId;
           const isColl = collisions.has(item.id);
@@ -167,9 +161,7 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
           return (
             <g key={item.id}
               transform={`translate(${cx},${cy}) rotate(${item.rotation||0}) translate(${-iw/2},${-ih/2})`}>
-              {/* Drop shadow */}
               <rect x={2} y={2} width={iw} height={ih} rx="3" fill="rgba(0,0,0,0.07)" style={{pointerEvents:'none'}}/>
-              {/* Body */}
               <rect width={iw} height={ih} rx="3"
                 fill={item.activeColor||'#D4B896'}
                 stroke={isColl ? '#EF4444' : isSel ? '#C8973A' : 'rgba(0,0,0,0.18)'}
@@ -187,13 +179,11 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
                 }}
                 onClick={e => { e.stopPropagation(); onSelectItem(item.id); }}
               />
-              {/* Label */}
               <text x={iw/2} y={ih/2} textAnchor="middle" dominantBaseline="middle"
                 fontSize="8" fill="#3E2723" fontWeight="500" fontFamily="sans-serif"
                 style={{ pointerEvents:'none', userSelect:'none' }}>
                 {item.name.length > 14 ? item.name.slice(0,13) + '…' : item.name}
               </text>
-              {/* Selection handles + rotation handle */}
               {isSel && (
                 <>
                   {[[-4,-4],[iw-4,-4],[-4,ih-4],[iw-4,ih-4]].map(([hx,hy],i) => (
@@ -207,7 +197,6 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
                       setRotating(item.id); onSelectItem(item.id); }}/>
                 </>
               )}
-              {/* Collision warning */}
               {isColl && (
                 <text x={iw/2} y={ih+13} textAnchor="middle" fontSize="8"
                   fill="#EF4444" fontWeight="700" style={{pointerEvents:'none'}}>
@@ -222,7 +211,7 @@ const Canvas2D = ({ room, placedItems, selectedId, onSelectItem, onMoveItem, onC
   );
 };
 
-// 3D ROOM GEOMETRY
+// 3D ROOM GEOMETRY — unchanged
 const WALL_T = 0.12;
 
 const WallSeg = ({ x, z, lenX, lenZ, H, wc }) => {
@@ -263,7 +252,6 @@ const RoomMesh3D = ({ room }) => {
   const isL = (shape || 'Rectangular') === 'L-Shape';
   const t   = WALL_T / 2;
   const floorGeo = useMemo(() => buildFloorBuffer(isL, W, L), [isL, W, L]);
-
   return (
     <group>
       <mesh receiveShadow>
@@ -291,7 +279,7 @@ const RoomMesh3D = ({ room }) => {
   );
 };
 
-// 3D FURNITURE
+// 3D FURNITURE — material helpers unchanged
 const mkMat = (src, tint, shading) => {
   if (!src || typeof src.clone !== 'function') return src;
   if (shading) {
@@ -322,19 +310,29 @@ const applyMats = (obj, tint, shading) => {
   });
 };
 
+// ─── FurnitureModel3D — FIXED: detects OBJ vs GLB and uses the right loader ──
 const FurnitureModel3D = ({ item, isSelected, isColliding, roomW, roomL, onClick }) => {
   const [scene3d, setScene3d] = useState(null);
   const base = useRef(null);
 
   useEffect(() => {
     if (!item.model3DUrl) { setScene3d(null); base.current = null; return; }
-    const loader = new GLTFLoader();
-    loader.load(resolveAssetUrl(item.model3DUrl), gltf => {
-      const sc  = gltf.scene.clone(true);
+
+    const url = resolveAssetUrl(item.model3DUrl);
+    // Strip query-string before reading extension
+    const ext = url.split('?')[0].split('.').pop().toLowerCase();
+
+    // Shared post-load handler — OBJLoader returns a Group, GLTFLoader returns gltf.scene
+    const onLoaded = (rootObject) => {
+      const sc  = (rootObject && typeof rootObject.clone === 'function')
+        ? rootObject.clone(true)
+        : rootObject;
       const box = new THREE.Box3().setFromObject(sc);
       const sz  = box.getSize(new THREE.Vector3());
       const s   = Math.min(
-        (item.width||1)/(sz.x||1), (item.height||0.8)/(sz.y||1), (item.depth||1)/(sz.z||1)
+        (item.width  || 1)   / (sz.x || 1),
+        (item.height || 0.8) / (sz.y || 1),
+        (item.depth  || 1)   / (sz.z || 1),
       );
       sc.scale.setScalar(s);
       const b2 = new THREE.Box3().setFromObject(sc);
@@ -343,7 +341,15 @@ const FurnitureModel3D = ({ item, isSelected, isColliding, roomW, roomL, onClick
       base.current = sc;
       applyMats(sc, item.activeColor, item.shading !== false);
       setScene3d(sc);
-    }, undefined, () => { setScene3d(null); base.current = null; });
+    };
+
+    const onError = () => { setScene3d(null); base.current = null; };
+
+    if (ext === 'obj') {
+      new OBJLoader().load(url, onLoaded, undefined, onError);
+    } else {
+      new GLTFLoader().load(url, (gltf) => onLoaded(gltf.scene), undefined, onError);
+    }
   }, [item.model3DUrl, item.width, item.depth, item.height]);
 
   useEffect(() => {
@@ -437,7 +443,6 @@ const Scene3D = ({ room, placedItems, selectedId, collisions, onSelectItem, onMo
       <mesh rotation={[-Math.PI/2,0,0]} position={[0,0.001,0]} receiveShadow>
         <planeGeometry args={[W*3,L*3]}/><shadowMaterial transparent opacity={0.18}/>
       </mesh>
-      {/* Click floor to deselect */}
       <mesh rotation={[-Math.PI/2,0,0]} position={[0,-0.001,0]}
         onClick={e => { e.stopPropagation(); onSelectItem(null); }}>
         <planeGeometry args={[W,L]}/><meshBasicMaterial transparent opacity={0}/>
@@ -457,7 +462,7 @@ const Scene3D = ({ room, placedItems, selectedId, collisions, onSelectItem, onMo
   );
 };
 
-// PROPERTIES PANELS
+// PROPERTIES PANELS — unchanged
 const RoomProperties = ({ room, onUpdate }) => (
   <div className="cw-prop-section">
     <h4 className="cw-prop-title">{room.name || 'Room'}</h4>
@@ -471,8 +476,6 @@ const RoomProperties = ({ room, onUpdate }) => (
         {room.dimensions?.width}m × {room.dimensions?.length}m × {room.dimensions?.height}m
       </span>
     </div>
-
-    {/* Wall colour palette */}
     <div className="cw-prop-group">
       <span className="cw-prop-label">Wall Color</span>
       <div className="cw-color-swatches">
@@ -484,8 +487,6 @@ const RoomProperties = ({ room, onUpdate }) => (
         ))}
       </div>
     </div>
-
-    {/* Floor colour palette */}
     <div className="cw-prop-group">
       <span className="cw-prop-label">Floor Color</span>
       <div className="cw-color-swatches">
@@ -520,8 +521,6 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
         {Number(item.width).toFixed(2)}m × {Number(item.depth).toFixed(2)}m × {Number(item.height).toFixed(2)}m
       </span>
     </div>
-
-    {/* Colour swatches */}
     {item.colors?.length > 0 && (
       <div className="cw-prop-group">
         <span className="cw-prop-label">Color</span>
@@ -535,8 +534,6 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
         </div>
       </div>
     )}
-
-    {/* Scale */}
     <div className="cw-prop-group">
       <span className="cw-prop-label">Scale</span>
       <div className="cw-scale-options">
@@ -544,18 +541,13 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
           <button key={s}
             className={`cw-scale-btn ${item.scale === s ? 'active' : ''}`}
             onClick={() => onUpdate(item.id, {
-              scale: s,
-              width:  item.baseWidth  * s,
-              depth:  item.baseDepth  * s,
-              height: item.baseHeight * s,
+              scale: s, width: item.baseWidth*s, depth: item.baseDepth*s, height: item.baseHeight*s,
             })}>
             {s}×
           </button>
         ))}
       </div>
     </div>
-
-    {/* Rotation slider */}
     <div className="cw-prop-group">
       <span className="cw-prop-label">Rotation</span>
       <div className="cw-prop-row no-border">
@@ -565,8 +557,6 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
         <span className="cw-prop-value">{item.rotation || 0}°</span>
       </div>
     </div>
-
-    {/* Shading toggle */}
     <div className="cw-prop-group">
       <div className="cw-prop-row no-border">
         <span className="cw-prop-label">Shading</span>
@@ -580,8 +570,6 @@ const FurnitureProperties = ({ item, onUpdate, onRemove, onRotate, onAddToCart }
         {item.shading !== false ? 'Realistic (PBR lighting)' : 'Flat / Matte (unlit)'}
       </span>
     </div>
-
-    {/* Quick-action buttons */}
     <div className="cw-prop-actions">
       <div className="cw-prop-actions-row">
         <button className="cw-prop-btn rotate" onClick={() => onRotate(item.id)}>
@@ -638,7 +626,6 @@ const TourBubble = ({ step, index, total, onNext, onSkip }) => (
   </div>
 );
 
-// SAVE MODAL
 const PackageIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/>
@@ -661,7 +648,6 @@ const CloseIcon = () => (
 const SaveModal = ({ defaultName, itemCount, onConfirm, onClose, isSaving }) => {
   const [name, setName] = useState(defaultName || 'My Design');
   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
   return (
     <div className="cw-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="cw-modal">
@@ -694,13 +680,12 @@ const SaveModal = ({ defaultName, itemCount, onConfirm, onClose, isSaving }) => 
   );
 };
 
-// MAIN CUSTOMER WORKSPACE
+// MAIN CUSTOMER WORKSPACE — unchanged except imports above
 const CustomerWorkspace = () => {
   const navigate  = useNavigate();
   const { addToCart } = useCart();
   const { roomId, designId: savedId } = useParams();
 
-  // ── core state 
   const [room,        setRoom]        = useState(null);
   const [placedItems, setPlacedItems] = useState([]);
   const [selectedId,  setSelectedId]  = useState(null);
@@ -710,26 +695,18 @@ const CustomerWorkspace = () => {
   const [furniture,   setFurniture]   = useState([]);
   const [categories,  setCategories]  = useState([]);
   const [selCat,      setSelCat]      = useState('all');
-
-  // ── save state 
   const [isSaving,     setIsSaving]     = useState(false);
   const [designId,     setDesignId]     = useState(savedId || null);
   const [designName,   setDesignName]   = useState('My Design');
   const [showSave,     setShowSave]     = useState(false);
   const [saveMsg,      setSaveMsg]      = useState('');
-
-  // ── tour state 
   const [tourStep,   setTourStep]   = useState(0);
-  const [showTour,   setShowTour]   = useState(false);  // triggered by help button
-
-  // ── history 
+  const [showTour,   setShowTour]   = useState(false);
   const [history,      setHistory]      = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const historyIndexRef = useRef(-1);
-
   const orbitRef = useRef(null);
 
-  // ── push to undo stack 
   const pushHistory = useCallback((items) => {
     const snap = JSON.stringify(items);
     setHistory(prev => {
@@ -758,7 +735,6 @@ const CustomerWorkspace = () => {
     });
   };
 
-  // ── load room template 
   useEffect(() => {
     if (!roomId) return;
     getPublishedRoom(roomId).then(res => {
@@ -773,7 +749,6 @@ const CustomerWorkspace = () => {
 
   useEffect(() => {
     if (!savedId) return;
-    
     getMyDesignById(savedId)
       .then(res => {
         const d = res.data;
@@ -795,7 +770,6 @@ const CustomerWorkspace = () => {
       });
   }, [savedId]);
 
-  // ── furniture catalog 
   useEffect(() => {
     listPublishedFurniture({ limit: 200 }).then(res => {
       const items = res.data || [];
@@ -804,10 +778,8 @@ const CustomerWorkspace = () => {
     }).catch(console.error);
   }, []);
 
-  // ── collision detection 
   useEffect(() => { setCollisions(checkCollisions(placedItems, room)); }, [placedItems, room]);
 
-  // ── furniture actions 
   const handleAddFurniture = (fi) => {
     if (!room) return;
     const bW = fi.dimensions?.width  || fi.width  || 1;
@@ -863,7 +835,6 @@ const CustomerWorkspace = () => {
 
   const handleUpdateRoom = (patch) => setRoom(prev => ({ ...prev, ...patch }));
 
-  // ── save 
   const handleSaveConfirm = async (name) => {
     try {
       setIsSaving(true);
@@ -879,21 +850,14 @@ const CustomerWorkspace = () => {
       setSaveMsg('saved');
       setTimeout(() => setSaveMsg(''), 3000);
     } catch (err) {
-      setSaveMsg(err.status === 401
-        ? 'auth_err'
-        : 'save_err'
-      );
+      setSaveMsg(err.status === 401 ? 'auth_err' : 'save_err');
       setTimeout(() => setSaveMsg(''), 4000);
     } finally { setIsSaving(false); }
   };
 
-  // ── tour helpers 
-  const openTour  = () => { setTourStep(0); setShowTour(true); };
-  const advanceTour = () => {
-    if (tourStep < TOUR.length - 1) { setTourStep(s => s + 1); }
-    else { setShowTour(false); }
-  };
-  const skipTour = () => { setShowTour(false); };
+  const openTour    = () => { setTourStep(0); setShowTour(true); };
+  const advanceTour = () => { if (tourStep < TOUR.length - 1) setTourStep(s => s + 1); else setShowTour(false); };
+  const skipTour    = () => setShowTour(false);
 
   const selectedItem = placedItems.find(i => i.id === selectedId) || null;
   const W = room?.dimensions?.width  || 4;
@@ -903,21 +867,14 @@ const CustomerWorkspace = () => {
 
   return (
     <div className="cw-root">
-
-      {/* ── Onboarding tour overlay (triggered by help button)  */}
       {showTour && (
         <TourBubble step={TOUR[tourStep]} index={tourStep}
           total={TOUR.length} onNext={advanceTour} onSkip={skipTour}/>
       )}
-
-      {/* ── Floating help button  */}
       <button className="cw-help-btn" onClick={openTour} title="How to use this workspace">
         <HelpIcon/>
       </button>
-
-      {/* ── TOP BAR  */}
       <div className="cw-topbar">
-        {/* Left: room info */}
         <div className="cw-topbar-left">
           <div className="cw-room-badge">
             <span className="cw-room-badge-name">
@@ -930,8 +887,6 @@ const CustomerWorkspace = () => {
             )}
           </div>
         </div>
-
-        {/* Centre: view toggle + undo/redo */}
         <div className="cw-topbar-center">
           <div className="cw-view-toggle">
             <button className={`cw-view-btn ${viewMode === '2D' ? 'active' : ''}`}
@@ -946,8 +901,6 @@ const CustomerWorkspace = () => {
               onClick={handleRedo} disabled={historyIndex >= history.length - 1}><RedoIcon/></button>
           </div>
         </div>
-
-        {/* Right: save status + buttons */}
         <div className="cw-topbar-right">
           {saveMsg && (
             <span className={`cw-save-msg ${saveMsg === 'saved' ? 'ok' : 'err'}`}>
@@ -965,10 +918,7 @@ const CustomerWorkspace = () => {
         </div>
       </div>
 
-      {/* ── BODY  */}
       <div className="cw-body">
-
-        {/* ── Left: Furniture catalog  */}
         <div className="cw-left-panel">
           <div className="cw-left-header">
             <span className="cw-left-title">Furniture</span>
@@ -1004,7 +954,6 @@ const CustomerWorkspace = () => {
           </div>
         </div>
 
-        {/* ── Canvas  */}
         <div className="cw-canvas-area">
           {viewMode === '2D' && (
             <div className="cw-zoom-controls">
@@ -1015,7 +964,6 @@ const CustomerWorkspace = () => {
                 onClick={() => setZoom(z => Math.max(z - 10, 30))}><ZoomOutIcon/></button>
             </div>
           )}
-
           <div className="cw-canvas-scroll">
             {viewMode === '2D' ? (
               <Canvas2D
@@ -1036,7 +984,6 @@ const CustomerWorkspace = () => {
                         onSelectItem={id => setSelectedId(id || null)}
                         onMoveItem3D={handleMoveItem3D} orbitRef={orbitRef}/>
                     </Canvas>
-                    {/* 3D zoom buttons */}
                     <div className="cw-zoom-controls cw-zoom-3d">
                       <button className="cw-zoom-btn" title="Zoom In"
                         onClick={() => { orbitRef.current?.dollyOut(1.2); orbitRef.current?.update(); }}>
@@ -1056,7 +1003,6 @@ const CustomerWorkspace = () => {
           </div>
         </div>
 
-        {/* ── Right: Properties panel  */}
         <div className="cw-right-panel">
           <div className="cw-panel-header">
             <span className="cw-panel-title">Properties</span>
@@ -1073,14 +1019,11 @@ const CustomerWorkspace = () => {
                     onRemove={handleRemoveItem}
                     onRotate={handleRotateItem}
                     onAddToCart={(item) => {
-                      const furnitureData = {
+                      addToCart({
                         _id: item.furnitureId || item._id,
-                        name: item.name,
-                        price: item.price || 0,
-                        image2DUrl: item.image2DUrl,
-                        category: item.category,
-                      };
-                      addToCart(furnitureData, 1, null);
+                        name: item.name, price: item.price || 0,
+                        image2DUrl: item.image2DUrl, category: item.category,
+                      }, 1, null);
                     }}
                   />
                 : room
@@ -1092,7 +1035,6 @@ const CustomerWorkspace = () => {
         </div>
       </div>
 
-      {/* ── Save modal  */}
       {showSave && (
         <SaveModal
           defaultName={designName}

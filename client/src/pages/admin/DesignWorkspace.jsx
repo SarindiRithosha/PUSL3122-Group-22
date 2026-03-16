@@ -5,6 +5,7 @@ import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { ACESFilmicToneMapping } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader }  from 'three/examples/jsm/loaders/OBJLoader.js';
 import {
   createDesign,
   getDesignById,
@@ -431,15 +432,23 @@ const FurnitureModel3D = ({ item, isSelected, isColliding, roomW, roomL, onClick
 
   useEffect(() => {
     if (!item.model3DUrl) { setGltfScene(null); baseScene.current = null; return; }
-    const loader = new GLTFLoader();
-    loader.load(resolveAssetUrl(item.model3DUrl), (gltf) => {
-      const scene = gltf.scene.clone(true);
+
+    const url = resolveAssetUrl(item.model3DUrl);
+    // Detect format from the URL — strip query strings first
+    const ext = url.split('?')[0].split('.').pop().toLowerCase();
+
+    // Shared post-load handler — works for both GLB scenes and OBJ groups
+    const onLoaded = (rootObject) => {
+      // OBJLoader returns a Group directly; GLTFLoader returns gltf.scene
+      const scene = (rootObject && typeof rootObject.clone === 'function')
+        ? rootObject.clone(true)
+        : rootObject;
       const box  = new THREE.Box3().setFromObject(scene);
       const size = box.getSize(new THREE.Vector3());
       const s    = Math.min(
-        (item.width ||1) / (size.x||1),
-        (item.height||0.8) / (size.y||1),
-        (item.depth ||1) / (size.z||1),
+        (item.width  || 1)   / (size.x || 1),
+        (item.height || 0.8) / (size.y || 1),
+        (item.depth  || 1)   / (size.z || 1),
       );
       scene.scale.setScalar(s);
       const box2 = new THREE.Box3().setFromObject(scene);
@@ -448,7 +457,17 @@ const FurnitureModel3D = ({ item, isSelected, isColliding, roomW, roomL, onClick
       baseScene.current = scene;
       applyFurnitureMaterials(scene, item.activeColor, item.shading !== false);
       setGltfScene(scene);
-    }, undefined, () => { setGltfScene(null); baseScene.current = null; });
+    };
+
+    const onError = () => { setGltfScene(null); baseScene.current = null; };
+
+    if (ext === 'obj') {
+      // OBJ models — use OBJLoader
+      new OBJLoader().load(url, onLoaded, undefined, onError);
+    } else {
+      // GLB / GLTF models — use GLTFLoader
+      new GLTFLoader().load(url, (gltf) => onLoaded(gltf.scene), undefined, onError);
+    }
   }, [item.model3DUrl, item.width, item.depth, item.height]);
 
   useEffect(() => {
@@ -809,7 +828,7 @@ const RightPanel = ({ activeTab, setActiveTab, furniture, categories, selectedCa
   </div>
 );
 
-// ─── Main Workspace ───────────────────────────────────────────────────────────
+// ─── Main Workspace 
 const DesignWorkspace = () => {
   const navigate      = useNavigate();
   const { id }        = useParams();
@@ -868,7 +887,6 @@ const DesignWorkspace = () => {
       setPlacedItems(d.placedItems || []);
       setDesignId(d._id);
       setShowSetupModal(false);
-      // Switch to correct start view
       setViewMode(viewStart);
     }).catch(console.error);
   }, [id, viewStart]);
