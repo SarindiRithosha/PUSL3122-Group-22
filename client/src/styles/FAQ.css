@@ -1,0 +1,95 @@
+.faq-page{
+  background:#FAF9F6;
+}
+
+/* Hero */
+
+.faq-hero{
+  background:linear-gradient(135deg,#4B2822,#8D6E63);
+  padding:80px 20px;
+  text-align:center;
+  color:white;
+}
+
+.faq-hero-container{
+  max-width:800px;
+  margin:auto;
+}
+
+.faq-tag{
+  background:rgba(255,255,255,0.2);
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+.faq-title{
+  font-size:3rem;
+  margin-top:15px;
+}
+
+.faq-accent{
+  color:#FFE0B2;
+}
+
+.faq-description{
+  margin-top:15px;
+  line-height:1.7;
+}
+
+/* FAQ Section */
+
+.faq-section{
+  padding:80px 20px;
+}
+
+.faq-container{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* FAQ Card */
+
+.faq-card{
+  background:white;
+  border-radius:14px;
+  padding:25px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  box-shadow:0 6px 16px rgba(0,0,0,0.08);
+}
+
+.faq-card:hover{
+  transform:translateY(-3px);
+}
+
+.faq-question{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.faq-question h3{
+  color:#3E2723;
+}
+
+.faq-answer{
+  margin-top:15px;
+  color:#555;
+  line-height:1.7;
+  text-align:justify;
+}
+
+/* Arrow Animation */
+
+.faq-icon{
+  transition:transform 0.3s ease;
+  color:#8D6E63;
+}
+
+.rotate{
+  transform:rotate(180deg);
+}

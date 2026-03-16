@@ -25,6 +25,9 @@ import CustomerSignIn        from './pages/CustomerSignIn';
 import CustomerSignUp        from './pages/CustomerSignUp';
 import CustomerForgotPassword from './pages/CustomerForgotPassword';
 import CustomerResetPassword  from './pages/CustomerResetPassword';
+import PrivacyPolicy         from './pages/PrivacyPolicy';
+import TermsConditions       from './pages/TermsConditions';
+import FAQ                   from './pages/FAQ';
 
 // Admin Pages
 import Dashboard         from './pages/admin/Dashboard';
@@ -72,6 +75,9 @@ function App() {
           <Route path="/cart"      element={<CustomerLayout><Cart/></CustomerLayout>} />
           <Route path="/checkout"  element={<CustomerLayout><Checkout/></CustomerLayout>} />
           <Route path="/room" element={<CustomerLayout><Room/></CustomerLayout>} />
+          <Route path="/privacy-policy"    element={<CustomerLayout><PrivacyPolicy/></CustomerLayout>} />
+          <Route path="/terms"  element={<CustomerLayout><TermsConditions/></CustomerLayout>} />
+          <Route path="/faq"               element={<CustomerLayout><FAQ/></CustomerLayout>} />
 
           <Route path="/workspace/room/:roomId"
             element={
